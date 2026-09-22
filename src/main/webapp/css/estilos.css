@@ -739,3 +739,446 @@ a {
     }
 
 }
+
+/* =========================================================
+   PÁGINAS DE UNIDADES ACADÉMICAS
+   ========================================================= */
+
+.unit-page {
+    min-height: 100vh;
+    background: #f5f7fb;
+    color: #172033;
+}
+
+
+/* =========================================================
+   ENCABEZADO DE LAS UNIDADES
+   ========================================================= */
+
+.unit-header {
+    background: linear-gradient(135deg, #111827, #1e293b);
+    color: white;
+    padding: 42px 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+.unit-header::after {
+    content: "";
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+    right: -80px;
+    top: -100px;
+}
+
+.unit-header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.unit-label {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #94a3b8;
+    margin-bottom: 12px;
+}
+
+.unit-header h1 {
+    margin: 0 0 10px;
+    font-size: 38px;
+    font-weight: 800;
+}
+
+.unit-header p {
+    margin: 0;
+    color: #cbd5e1;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================= */
+
+.unit-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 45px 30px 60px;
+}
+
+
+/* =========================================================
+   BOTÓN VOLVER
+   ========================================================= */
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #475569;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 30px;
+    transition: 0.2s ease;
+}
+
+.back-button:hover {
+    color: #111827;
+    transform: translateX(-3px);
+}
+
+
+/* =========================================================
+   SEMANAS
+   ========================================================= */
+
+.week-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.week-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.10);
+}
+
+
+/* =========================================================
+   ENCABEZADO DE SEMANA
+   ========================================================= */
+
+.week-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 24px 28px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.week-number {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: #111827;
+    color: white;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.week-title {
+    flex: 1;
+}
+
+.week-title h2 {
+    margin: 0 0 5px;
+    font-size: 21px;
+    color: #172033;
+}
+
+.week-title p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   CONTENIDO DE SEMANA
+   ========================================================= */
+
+.week-content {
+    padding: 28px;
+}
+
+.week-description {
+    color: #475569;
+    font-size: 15px;
+    line-height: 1.7;
+    margin: 0 0 25px;
+}
+
+
+/* =========================================================
+   TÍTULO DE TRABAJOS
+   ========================================================= */
+
+.works-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.works-title h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #172033;
+}
+
+.works-title span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 7px;
+    border-radius: 20px;
+    background: #e2e8f0;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   LISTA DE TRABAJOS
+   ========================================================= */
+
+.work-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.work-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 18px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    transition: 0.2s ease;
+}
+
+.work-item:hover {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    box-shadow: 0 5px 15px rgba(15, 23, 42, 0.06);
+}
+
+
+/* =========================================================
+   INFORMACIÓN DEL ARCHIVO
+   ========================================================= */
+
+.work-info {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-width: 0;
+}
+
+.file-icon {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #e2e8f0;
+    font-size: 20px;
+}
+
+.file-details {
+    min-width: 0;
+}
+
+.file-details strong {
+    display: block;
+    color: #172033;
+    font-size: 14px;
+    margin-bottom: 4px;
+    word-break: break-word;
+}
+
+.file-details span {
+    color: #64748b;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   BOTONES VER / DESCARGAR
+   ========================================================= */
+
+.work-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.view-button,
+.download-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 13px;
+    border-radius: 9px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.view-button {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.view-button:hover {
+    background: #cbd5e1;
+    color: #0f172a;
+}
+
+.download-button {
+    background: #111827;
+    color: white;
+}
+
+.download-button:hover {
+    background: #334155;
+    color: white;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   CUANDO NO EXISTEN TRABAJOS
+   ========================================================= */
+
+.empty-work {
+    padding: 25px;
+    text-align: center;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    background: #f8fafc;
+    color: #64748b;
+}
+
+.empty-work p {
+    margin: 0;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   BOTÓN REGRESAR AL FINAL
+   ========================================================= */
+
+.unit-footer {
+    margin-top: 35px;
+    padding-top: 25px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.unit-footer a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #475569;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.unit-footer a:hover {
+    color: #111827;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .unit-header {
+        padding: 32px 25px;
+    }
+
+    .unit-header h1 {
+        font-size: 30px;
+    }
+
+    .unit-container {
+        padding: 30px 18px 45px;
+    }
+
+    .week-header {
+        padding: 20px;
+    }
+
+    .week-content {
+        padding: 20px;
+    }
+
+    .work-item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .work-actions {
+        width: 100%;
+    }
+
+    .view-button,
+    .download-button {
+        flex: 1;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .unit-header h1 {
+        font-size: 25px;
+    }
+
+    .week-number {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        font-size: 14px;
+    }
+
+    .week-title h2 {
+        font-size: 18px;
+    }
+
+    .work-info {
+        align-items: flex-start;
+    }
+
+    .work-actions {
+        flex-direction: column;
+    }
+
+    .view-button,
+    .download-button {
+        width: 100%;
+    }
+}

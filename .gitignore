@@ -1,0 +1,18 @@
+# Maven
+target/
+
+# Java
+*.class
+
+# IDE - Visual Studio Code
+.vscode/
+
+# IntelliJ IDEA
+.idea/
+
+# Archivos de sistema de Windows
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log

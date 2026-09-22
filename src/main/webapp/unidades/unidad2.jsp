@@ -1,98 +1,165 @@
-
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<%
-    request.setAttribute("numeroUnidad", "2");
-%>
+<%@ page import="java.io.File" %>
+<%@ page import="java.net.URLEncoder" %>
+<%@ page import="java.nio.charset.StandardCharsets" %>
 
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Unidad II | Mi Portafolio</title>
+    <title>Unidad II - Mi Portafolio</title>
 
-    <link rel="stylesheet" href="../css/estilos.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
+
 </head>
+
 
 <body>
 
-<aside class="sidebar">
 
-    <div class="logo-container">
-        <h2>MI PORTAFOLIO</h2>
-        <span>Académico</span>
-    </div>
+<header>
 
-    <nav class="menu">
-        <a href="../index.jsp">🏠 Inicio</a>
-        <a href="unidad1.jsp">📘 Unidad I</a>
-        <a href="unidad2.jsp" class="active">📗 Unidad II</a>
-        <a href="unidad3.jsp">📙 Unidad III</a>
-        <a href="unidad4.jsp">📕 Unidad IV</a>
-    </nav>
+    <h1>MI PORTAFOLIO</h1>
 
-    <div class="sidebar-footer">
-        <p>Ingeniería de Sistemas</p>
-    </div>
+    <p>Espacio académico digital</p>
 
-</aside>
+</header>
 
-<main class="main-content">
 
-    <header class="topbar">
-        <div>
-            <span class="section-label">PORTAFOLIO ACADÉMICO</span>
-            <h1>Unidad II</h1>
-        </div>
+<main>
 
-        <a href="../index.jsp" class="btn-primary">
-            Volver al inicio
-        </a>
-    </header>
+    <h2>Unidad II</h2>
 
-    <section class="welcome-section">
+    <p>
+        Modelado de la Arquitectura de Software mediante POO
+    </p>
 
-        <span class="section-label">SEGUNDA UNIDAD</span>
 
-        <h2>Contenido de la Unidad II</h2>
+    <section>
+
+        <h3>Semana 5</h3>
 
         <p>
-            Aquí podrás consultar las semanas y almacenar
-            tus trabajos académicos.
+            Contenido académico de la Semana 5.
         </p>
 
-    </section>
-
-    <section class="weeks-section">
-
-        <h2>Semanas académicas</h2>
+        <h4>Trabajos académicos</h4>
 
         <%
-            for (int semana = 5; semana <= 8; semana++) {
 
-                request.setAttribute("numeroSemana",
-                        String.valueOf(semana));
+        for (int semana = 1; semana <= 4; semana++) {
 
-                request.setAttribute("tituloSemana",
-                        "Contenido y actividades académicas");
+            String nombreSemana = "semana" + semana;
+
+            String ruta = application.getRealPath(
+                "/assets/documentos/unidad2/" + nombreSemana
+            );
+
+            File carpeta = new File(ruta);
+
+            File[] archivos = carpeta.listFiles();
+
         %>
 
-            <jsp:include page="/WEB-INF/vistas/semana.jsp"/>
+        <%
+
+            if (semana > 1) {
+
+        %>
+
+        <h3>Semana <%= semana + 4 %></h3>
+
+        <p>
+            Contenido académico correspondiente a esta semana.
+        </p>
+
+        <h4>Trabajos académicos</h4>
 
         <%
+
             }
+
+            if (archivos != null && archivos.length > 0) {
+
+                for (File archivo : archivos) {
+
+                    if (archivo.isFile()) {
+
+                        String nombre = archivo.getName();
+
+                        String nombreCodificado = URLEncoder.encode(
+                            nombre,
+                            StandardCharsets.UTF_8
+                        ).replace("+", "%20");
+
         %>
+
+        <div>
+
+            <p>
+                <strong><%= nombre %></strong>
+            </p>
+
+            <a
+                href="../assets/documentos/unidad2/<%= nombreSemana %>/<%= nombreCodificado %>"
+                target="_blank">
+                Ver archivo
+            </a>
+
+            &nbsp;
+
+            <a
+                href="../assets/documentos/unidad2/<%= nombreSemana %>/<%= nombreCodificado %>"
+                download>
+                Descargar
+            </a>
+
+        </div>
+
+        <%
+
+                    }
+
+                }
+
+            } else {
+
+        %>
+
+        <p>
+            Todavía no hay trabajos cargados en esta semana.
+        </p>
+
+        <%
+
+            }
+
+        }
+
+        %>
+
 
     </section>
 
-    <footer class="footer">
-        <p>© 2026 Mi Portafolio Académico</p>
-    </footer>
+
+    <p>
+
+        <a href="../index.jsp">
+            ← Volver al inicio
+        </a>
+
+    </p>
+
 
 </main>
 
+
 </body>
+
 </html>
