@@ -336,7 +336,7 @@
                     <p>
 
                         Fundamentos de la arquitectura
-                        de computadoras.
+                        de Software y Estandares Internacionales.
 
                     </p>
 
@@ -390,8 +390,8 @@
 
                     <p>
 
-                        Procesadores, memoria y
-                        componentes internos.
+                        Modelado de la Arquitectura de 
+                        Software mediante POO.
 
                     </p>
 
@@ -445,8 +445,8 @@
 
                     <p>
 
-                        Sistemas de almacenamiento
-                        y dispositivos de entrada.
+                        Comunicaciones e Integracion de 
+                        Arquitecturas de Software.
 
                     </p>
 
@@ -500,8 +500,8 @@
 
                     <p>
 
-                        Rendimiento, tecnología y
-                        tendencias actuales.
+                        Frameworks y Estandares para la
+                        Implementación de Arquitecturas.
 
                     </p>
 
