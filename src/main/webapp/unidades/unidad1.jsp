@@ -13,7 +13,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Unidad I | Arquitectura de Computadoras</title>
+    <title>Unidad I | Arquitectura de Software</title>
 
     <!-- CSS PRINCIPAL -->
     <link rel="stylesheet"

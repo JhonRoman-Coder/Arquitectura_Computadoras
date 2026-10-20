@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Arquitectura de Computadoras | Portafolio</title>
+    <title>Arquitectura de Software | Portafolio</title>
 
     <link rel="stylesheet" href="css/estilos.css">
 </head>
