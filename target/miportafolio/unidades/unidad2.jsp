@@ -1023,12 +1023,11 @@
                     </span>
 
                     <h3>
-                        Relaciones entre clases y diseño de componentes
+                        Diseño físico de la base de datos de la aplicación en un repositorio (Ejemplo: Ms. Azure)
                     </h3>
 
                     <p>
-                        Representación de relaciones entre clases y organización de
-                        componentes de software.
+                        Representación del diseño físico de la base de datos de la aplicación en un repositorio, como Microsoft Azure.
                     </p>
 
                     <h4>
@@ -1148,11 +1147,11 @@
                     </span>
 
                     <h3>
-                        Representación y documentación del modelo de arquitectura
+                        Diseño del front-end utilizando una herramienta (Figma)
                     </h3>
 
                     <p>
-                        Elaboración y documentación de modelos de arquitectura de software.
+                        Elaboración y documentación de diseños de interfaz de usuario para la aplicación.
                     </p>
 
                     <h4>

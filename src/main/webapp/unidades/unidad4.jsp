@@ -8,27 +8,12 @@
 
 <%
     String contexto = request.getContextPath();
-
-    String[] titulos = {
-        "Frameworks para la implementación de arquitecturas",
-        "Estándares y buenas prácticas de desarrollo",
-        "Integración y desarrollo de componentes",
-        "Pruebas, validación y presentación del sistema"
-    };
-
-    String[] descripciones = {
-        "Estudio y aplicación de frameworks para implementar arquitecturas de software, considerando la organización de componentes y las tecnologías utilizadas.",
-        "Aplicación de estándares, patrones de diseño y buenas prácticas para mejorar la calidad, mantenibilidad y organización del software.",
-        "Desarrollo e integración de componentes funcionales, considerando la comunicación entre las distintas capas de una aplicación.",
-        "Evaluación del funcionamiento del sistema mediante pruebas, validación de requerimientos y documentación de los resultados obtenidos."
-    };
 %>
 
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta name="viewport"
@@ -40,9 +25,6 @@
           href="<%= contexto %>/css/estilos.css">
 
     <style>
-
-        /* CONFIGURACIÓN GENERAL */
-
         * {
             box-sizing: border-box;
         }
@@ -76,15 +58,14 @@
             margin-left: 0 !important;
             padding: 0 40px;
             background: #08111f;
-            color: #f8fafc;
         }
 
         /* BARRA SUPERIOR */
 
         .unit-page .topbar {
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
             gap: 20px;
             padding: 28px 10px;
             background: #0d1b2a !important;
@@ -130,9 +111,7 @@
             border: 1px solid rgba(96,165,250,.15);
             border-radius: 20px;
             background: linear-gradient(
-                135deg,
-                #0d1b2a 0%,
-                #10243b 100%
+                135deg, #0d1b2a, #10243b
             ) !important;
         }
 
@@ -191,12 +170,10 @@
             border-radius: 50%;
             border: 5px solid rgba(96,165,250,.18);
             background: linear-gradient(
-                135deg,
-                #2563eb,
-                #1e40af
+                135deg, #2563eb, #1e40af
             );
             box-shadow: 0 20px 50px rgba(0,0,0,.35);
-            color: #ffffff;
+            color: white;
         }
 
         .unit-page .graphic-circle span {
@@ -229,7 +206,6 @@
 
         .unit-page .primary-button:hover {
             background: #1d4ed8 !important;
-            color: #ffffff !important;
             transform: translateY(-2px);
         }
 
@@ -241,7 +217,7 @@
 
         .unit-page .secondary-button:hover {
             background: rgba(37,99,235,.16) !important;
-            color: #ffffff !important;
+            color: white !important;
         }
 
         /* ESTADÍSTICAS */
@@ -347,9 +323,7 @@
             flex-shrink: 0;
             border-radius: 14px;
             background: linear-gradient(
-                135deg,
-                #2563eb,
-                #1e40af
+                135deg, #2563eb, #1e40af
             );
             color: #ffffff !important;
             font-size: 1.1rem;
@@ -377,7 +351,7 @@
             line-height: 1.7;
         }
 
-        /* TARJETAS DE ARCHIVOS */
+        /* ARCHIVOS */
 
         .unit-page .file-card {
             display: flex;
@@ -432,7 +406,7 @@
             color: #94a3b8 !important;
         }
 
-        /* PIE DE PÁGINA */
+        /* FOOTER */
 
         .unit-page .footer {
             padding: 30px 10px;
@@ -446,10 +420,9 @@
             font-size: .9rem;
         }
 
-        /* TABLET */
+        /* RESPONSIVE */
 
         @media (max-width: 900px) {
-
             .unit-page .main-content {
                 padding: 0 20px;
             }
@@ -469,10 +442,7 @@
             }
         }
 
-        /* CELULARES */
-
         @media (max-width: 600px) {
-
             .unit-page .main-content {
                 padding: 0 12px;
             }
@@ -485,16 +455,13 @@
                 font-size: 1.25rem;
             }
 
-            .unit-page .profile-badge {
+            .unit-page .profile-badge,
+            .unit-page .welcome-graphic {
                 display: none;
             }
 
             .unit-page .welcome-section {
                 padding: 22px;
-            }
-
-            .unit-page .welcome-graphic {
-                display: none;
             }
 
             .unit-page .stats-grid {
@@ -534,373 +501,402 @@
                 width: 100%;
             }
         }
-
     </style>
-
 </head>
 
 <body class="unit-page">
 
 <div class="app-container">
+<main class="main-content">
 
-    <main class="main-content">
+    <!-- BARRA SUPERIOR -->
 
-        <!-- BARRA SUPERIOR -->
+    <header class="topbar">
 
-        <header class="topbar">
+        <div>
+            <p class="topbar-subtitle">
+                PORTAFOLIO ACADÉMICO
+            </p>
 
+            <h1>
+                Frameworks y Estándares para la
+                Implementación de Arquitecturas
+            </h1>
+        </div>
+
+        <div class="profile-badge">JS</div>
+
+    </header>
+
+    <!-- PRESENTACIÓN -->
+
+    <section class="welcome-section">
+
+        <div class="welcome-content">
+
+            <span class="tag">UNIDAD IV</span>
+
+            <h2>
+                Frameworks, Estándares e
+                <span>Implementación de Software</span>
+            </h2>
+
+            <p>
+                En esta unidad se estudian los frameworks,
+                estándares y buenas prácticas utilizados
+                para implementar arquitecturas de software.
+
+                Se desarrollan actividades relacionadas
+                con la construcción de componentes,
+                integración de funcionalidades y validación
+                de soluciones tecnológicas.
+            </p>
+
+            <a href="#semanas" class="primary-button">
+                Explorar semanas →
+            </a>
+
+        </div>
+
+        <div class="welcome-graphic">
+            <div class="graphic-circle">
+                <span>04</span>
+                <strong>DEV</strong>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ESTADÍSTICAS -->
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-icon">▦</div>
             <div>
-
-                <p class="topbar-subtitle">
-                    PORTAFOLIO ACADÉMICO
-                </p>
-
-                <h1>
-                    Frameworks y Estándares para la
-                    Implementación de Arquitecturas
-                </h1>
-
+                <h3>04</h3>
+                <p>Semanas académicas</p>
             </div>
+        </div>
 
-            <div class="profile-badge">
-                JS
+        <div class="stat-card">
+            <div class="stat-icon">▤</div>
+            <div>
+                <h3>IV</h3>
+                <p>Unidad académica</p>
             </div>
+        </div>
 
-        </header>
+        <div class="stat-card">
+            <div class="stat-icon">✓</div>
+            <div>
+                <h3>100%</h3>
+                <p>Contenido organizado</p>
+            </div>
+        </div>
 
-        <!-- PRESENTACIÓN -->
+    </section>
 
-        <section class="welcome-section">
+    <!-- SEMANAS -->
 
-            <div class="welcome-content">
+    <section class="content-section" id="semanas">
 
-                <span class="tag">
-                    UNIDAD IV
+        <div class="section-heading">
+            <div>
+                <span class="section-label">
+                    CONTENIDO DE LA UNIDAD
                 </span>
-
-                <h2>
-                    Frameworks, Estándares e
-                    <span>Implementación de Software</span>
-                </h2>
-
-                <p>
-                    En esta unidad se estudia la utilización
-                    de frameworks, estándares y buenas prácticas
-                    para implementar arquitecturas de software.
-
-                    Se desarrollan actividades relacionadas con
-                    la construcción de componentes, la integración
-                    de funcionalidades, la organización del código
-                    y la validación de soluciones tecnológicas.
-                </p>
-
-                <a href="#semanas" class="primary-button">
-                    Explorar semanas →
-                </a>
-
+                <h2>Unidad IV</h2>
             </div>
 
-            <div class="welcome-graphic">
+            <span class="section-counter">
+                04 semanas
+            </span>
+        </div>
 
-                <div class="graphic-circle">
-                    <span>04</span>
-                    <strong>DEV</strong>
-                </div>
+        <%
+            for (int semana = 1; semana <= 4; semana++) {
 
-            </div>
+                int numeroSemana = semana + 12;
+                String nombreSemana = "semana" + semana;
 
-        </section>
+                String rutaRelativa =
+                    "/assets/documentos/unidad4/" + nombreSemana;
 
-        <!-- ESTADÍSTICAS -->
+                String rutaFisica =
+                    application.getRealPath(rutaRelativa);
 
-        <section class="stats-grid">
+                File[] archivos = null;
 
-            <div class="stat-card">
-                <div class="stat-icon">▦</div>
-                <div>
-                    <h3>04</h3>
-                    <p>Semanas académicas</p>
-                </div>
-            </div>
+                if (rutaFisica != null) {
+                    File carpeta = new File(rutaFisica);
 
-            <div class="stat-card">
-                <div class="stat-icon">▤</div>
-                <div>
-                    <h3>IV</h3>
-                    <p>Unidad académica</p>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-icon">✓</div>
-                <div>
-                    <h3>100%</h3>
-                    <p>Contenido organizado</p>
-                </div>
-            </div>
-
-        </section>
-
-        <!-- CONTENIDO ACADÉMICO -->
-
-        <section class="content-section" id="semanas">
-
-            <div class="section-heading">
-
-                <div>
-                    <span class="section-label">
-                        CONTENIDO DE LA UNIDAD
-                    </span>
-
-                    <h2>Unidad IV</h2>
-                </div>
-
-                <span class="section-counter">
-                    04 semanas
-                </span>
-
-            </div>
-
-            <%
-
-                for (int semana = 1; semana <= 4; semana++) {
-
-                    int numeroSemana = semana + 12;
-
-                    String nombreSemana = "semana" + semana;
-
-                    String rutaRelativa =
-                        "/assets/documentos/unidad4/" + nombreSemana;
-
-                    String rutaFisica =
-                        application.getRealPath(rutaRelativa);
-
-                    File[] archivos = null;
-
-                    if (rutaFisica != null) {
-
-                        File carpeta = new File(rutaFisica);
-
-                        if (carpeta.isDirectory()) {
-
-                            archivos = carpeta.listFiles(
-                                archivo -> archivo.isFile()
-                            );
-                        }
-                    }
-
-                    if (archivos != null) {
-
-                        Arrays.sort(
-                            archivos,
-                            Comparator.comparing(
-                                File::getName,
-                                String.CASE_INSENSITIVE_ORDER
-                            )
+                    if (carpeta.isDirectory()) {
+                        archivos = carpeta.listFiles(
+                            archivo -> archivo.isFile()
                         );
                     }
+                }
 
-                    String rutaWeb = contexto + rutaRelativa;
+                if (archivos != null) {
+                    Arrays.sort(
+                        archivos,
+                        Comparator.comparing(
+                            File::getName,
+                            String.CASE_INSENSITIVE_ORDER
+                        )
+                    );
+                }
 
-            %>
+                String rutaWeb = contexto + rutaRelativa;
+        %>
 
-            <!-- TARJETA DE SEMANA -->
+        <article class="documents-panel">
 
-            <article class="documents-panel">
+            <div class="document-icon">
+                <%= String.format("%02d", semana) %>
+            </div>
 
-                <div class="document-icon">
-                    <%= String.format("%02d", semana) %>
-                </div>
+            <div class="panel-content">
 
-                <div class="panel-content">
+                <span class="section-label">
+                    SEMANA <%= numeroSemana %>
+                </span>
 
-                    <span class="section-label">
-                        SEMANA <%= numeroSemana %>
-                    </span>
+                <!-- ===================================== -->
+                <!-- TÍTULOS Y DESCRIPCIONES EDITABLES -->
+                <!-- ===================================== -->
+
+                <% if (semana == 1) { %>
+
+                    <!-- SEMANA 13 -->
 
                     <h3>
-                        <%= titulos[semana - 1] %>
+                        Frameworks para la implementación
+                        de arquitecturas
                     </h3>
 
                     <p>
-                        <%= descripciones[semana - 1] %>
+                        En esta semana se estudian los
+                        fundamentos de los frameworks
+                        utilizados para implementar
+                        arquitecturas de software.
+
+                        Se analizan sus principales
+                        características, ventajas y
+                        aplicaciones en el desarrollo
+                        de sistemas informáticos.
                     </p>
 
-                    <h4>Trabajos académicos</h4>
+                <% } else if (semana == 2) { %>
 
-                    <%
+                    <!-- SEMANA 14 -->
 
-                        if (archivos != null && archivos.length > 0) {
+                    <h3>
+                        Estándares y buenas prácticas
+                        de desarrollo
+                    </h3>
 
-                            for (File archivo : archivos) {
+                    <p>
+                        Se estudian y aplican estándares
+                        de desarrollo de software,
+                        considerando principios de
+                        organización, mantenibilidad,
+                        reutilización y calidad del código.
 
-                                String nombre = archivo.getName();
+                        Asimismo, se revisan buenas prácticas
+                        para mejorar la estructura y
+                        funcionamiento de las aplicaciones.
+                    </p>
 
-                                String nombreCodificado =
-                                    URLEncoder.encode(
-                                        nombre,
-                                        StandardCharsets.UTF_8
-                                    ).replace("+", "%20");
+                <% } else if (semana == 3) { %>
 
-                                int punto = nombre.lastIndexOf('.');
+                    <!-- SEMANA 15 -->
 
-                                String extension = "";
+                    <h3>
+                        Integración y desarrollo
+                        de componentes
+                    </h3>
 
-                                if (punto >= 0) {
+                    <p>
+                        Se desarrollan actividades
+                        relacionadas con la integración
+                        de componentes de software,
+                        considerando la comunicación
+                        entre las distintas capas
+                        de una aplicación.
 
-                                    extension = nombre.substring(
-                                        punto + 1
-                                    ).toUpperCase();
-                                }
+                        Se busca mejorar la interoperabilidad
+                        y la organización funcional
+                        del sistema.
+                    </p>
 
-                                String urlArchivo =
-                                    rutaWeb + "/" + nombreCodificado;
+                <% } else if (semana == 4) { %>
 
-                                String nombreSeguro = nombre
-                                    .replace("&", "&amp;")
-                                    .replace("<", "&lt;")
-                                    .replace(">", "&gt;")
-                                    .replace("\"", "&quot;")
-                                    .replace("'", "&#39;");
+                    <!-- SEMANA 16 -->
 
-                    %>
+                    <h3>
+                        Pruebas, validación y
+                        presentación del sistema
+                    </h3>
 
-                    <!-- TARJETA DE ARCHIVO -->
+                    <p>
+                        Se realizan actividades de evaluación
+                        y validación de los componentes
+                        desarrollados, verificando su
+                        funcionamiento de acuerdo con
+                        los requerimientos establecidos.
 
-                    <div class="file-card">
+                        Finalmente, se organiza la
+                        documentación y presentación
+                        de los resultados obtenidos.
+                    </p>
 
-                        <div class="document-icon">
-                            ▤
-                        </div>
+                <% } %>
 
-                        <div class="file-content">
+                <!-- DOCUMENTOS AUTOMÁTICOS -->
 
-                            <h3>
-                                <%= nombreSeguro %>
-                            </h3>
+                <h4>Trabajos académicos</h4>
 
-                            <p>
-                                Archivo académico
-                                <%= extension.isEmpty()
-                                    ? ""
-                                    : " · Formato " + extension %>
-                            </p>
+                <%
+                    if (archivos != null && archivos.length > 0) {
 
-                            <div class="file-actions">
+                        for (File archivo : archivos) {
 
-                                <a href="<%= urlArchivo %>"
-                                   target="_blank"
-                                   rel="noopener noreferrer"
-                                   class="primary-button">
+                            String nombre = archivo.getName();
 
-                                    Ver archivo →
-                                </a>
+                            String nombreCodificado =
+                                URLEncoder.encode(
+                                    nombre,
+                                    StandardCharsets.UTF_8
+                                ).replace("+", "%20");
 
-                                <a href="<%= urlArchivo %>"
-                                   download
-                                   class="primary-button secondary-button">
+                            int punto = nombre.lastIndexOf('.');
 
-                                    Descargar
-                                </a>
+                            String extension = "";
 
-                            </div>
+                            if (punto >= 0) {
+                                extension = nombre.substring(
+                                    punto + 1
+                                ).toUpperCase();
+                            }
+
+                            String urlArchivo =
+                                rutaWeb + "/" + nombreCodificado;
+
+                            String nombreSeguro = nombre
+                                .replace("&", "&amp;")
+                                .replace("<", "&lt;")
+                                .replace(">", "&gt;")
+                                .replace("\"", "&quot;")
+                                .replace("'", "&#39;");
+                %>
+
+                <div class="file-card">
+
+                    <div class="document-icon">▤</div>
+
+                    <div class="file-content">
+
+                        <h3><%= nombreSeguro %></h3>
+
+                        <p>
+                            Archivo académico
+                            <%= extension.isEmpty()
+                                ? ""
+                                : " · Formato " + extension %>
+                        </p>
+
+                        <div class="file-actions">
+
+                            <a href="<%= urlArchivo %>"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="primary-button">
+                                Ver archivo →
+                            </a>
+
+                            <a href="<%= urlArchivo %>"
+                               download
+                               class="primary-button secondary-button">
+                                Descargar
+                            </a>
 
                         </div>
 
                     </div>
 
-                    <%
+                </div>
 
-                            }
-
-                        } else {
-
-                    %>
-
-                    <p class="empty-message">
-                        Todavía no hay trabajos cargados
-                        en esta semana.
-                    </p>
-
-                    <%
-
+                <%
                         }
+                    } else {
+                %>
 
-                    %>
+                <p class="empty-message">
+                    Todavía no hay trabajos cargados
+                    en esta semana.
+                </p>
 
-                </div>
-
-            </article>
-
-            <%
-
-                }
-
-            %>
-
-        </section>
-
-        <!-- NAVEGACIÓN -->
-
-        <section class="content-section">
-
-            <div class="section-heading">
-
-                <div>
-                    <span class="section-label">
-                        NAVEGACIÓN
-                    </span>
-
-                    <h2>Continuar explorando</h2>
-                </div>
+                <%
+                    }
+                %>
 
             </div>
 
-            <div class="documents-panel">
+        </article>
 
-                <div class="document-icon">
-                    ←
-                </div>
+        <%
+            }
+        %>
 
-                <div class="panel-content">
+    </section>
 
-                    <h3>Volver a las unidades</h3>
+    <!-- NAVEGACIÓN -->
 
-                    <p>
-                        Regresa al inicio para consultar
-                        las demás unidades académicas
-                        de tu portafolio.
-                    </p>
+    <section class="content-section">
 
-                    <a href="<%= contexto %>/index.jsp#unidades"
-                       class="primary-button">
+        <div class="section-heading">
+            <div>
+                <span class="section-label">NAVEGACIÓN</span>
+                <h2>Continuar explorando</h2>
+            </div>
+        </div>
 
-                        ← Ver unidades
-                    </a>
+        <div class="documents-panel">
 
-                </div>
+            <div class="document-icon">←</div>
+
+            <div class="panel-content">
+
+                <h3>Volver a las unidades</h3>
+
+                <p>
+                    Regresa al inicio para consultar
+                    las demás unidades académicas
+                    de tu portafolio.
+                </p>
+
+                <a href="<%= contexto %>/index.jsp#unidades"
+                   class="primary-button">
+                    ← Ver unidades
+                </a>
 
             </div>
 
-        </section>
+        </div>
 
-        <!-- FOOTER -->
+    </section>
 
-        <footer class="footer">
+    <footer class="footer">
+        <p>© 2026 Mi Portafolio Académico</p>
+        <p>
+            Frameworks y Estándares para la
+            Implementación de Arquitecturas
+        </p>
+    </footer>
 
-            <p>
-                © 2026 Mi Portafolio Académico
-            </p>
-
-            <p>
-                Frameworks y Estándares para la
-                Implementación de Arquitecturas
-            </p>
-
-        </footer>
-
-    </main>
-
+</main>
 </div>
 
 </body>

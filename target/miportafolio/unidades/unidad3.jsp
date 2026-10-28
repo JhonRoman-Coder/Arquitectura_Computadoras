@@ -2,26 +2,37 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.io.File" %>
 <%@ page import="java.net.URLEncoder" %>
-<%@ page import="java.nio.charset.StandardCharsets" %>
 <%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.Comparator" %>
 
 <%
-    String[] titulos = {
-        "Diseño físico de la base de datos en Microsoft Azure",
-        "Diseño del front-end utilizando Figma",
-        "Codificación del primer requerimiento en React JS",
-        "Desarrollo e integración de componentes de software"
-    };
-
-    String[] descripciones = {
-        "Diseño físico de la base de datos de Pequeños Exploradores LMS, incluyendo tablas, relaciones, restricciones y estructura SQL.",
-        "Diseño de las interfaces del sistema mediante Figma, considerando la experiencia de usuario, la navegación y la organización visual.",
-        "Implementación de la ventana de ingreso (Login) en React JS, incluyendo formularios, validaciones y selección de perfiles.",
-        "Desarrollo y organización de componentes de software para continuar con la integración funcional de la aplicación."
-    };
-
     String contexto = request.getContextPath();
+
+    // SEMANA 09: carpeta semana3 dentro de unidad3
+    String rutaRelativa = "/assets/documentos/unidad3/semana3";
+    String rutaFisica = application.getRealPath(rutaRelativa);
+
+    File[] archivos = null;
+
+    if (rutaFisica != null) {
+        File carpeta = new File(rutaFisica);
+
+        if (carpeta.isDirectory()) {
+            archivos = carpeta.listFiles(
+                archivo -> archivo.isFile()
+            );
+        }
+    }
+
+    if (archivos != null) {
+        Arrays.sort(
+            archivos,
+            Comparator.comparing(
+                File::getName,
+                String.CASE_INSENSITIVE_ORDER
+            )
+        );
+    }
 %>
 
 <!DOCTYPE html>
@@ -34,9 +45,6 @@
 
     <title>Unidad III | Mi Portafolio Académico</title>
 
-    <link rel="stylesheet"
-          href="<%= contexto %>/css/estilos.css">
-
     <style>
         * {
             box-sizing: border-box;
@@ -46,285 +54,222 @@
             scroll-behavior: smooth;
         }
 
-        body.unit-page {
+        body {
             margin: 0;
-            min-height: 100vh;
-            background: #08111f !important;
-            color: #f8fafc !important;
+            background: #08111f;
+            color: #f8fafc;
             font-family: Arial, sans-serif;
         }
 
-        .unit-page .app-container {
-            min-height: 100vh;
-            background: #08111f;
-        }
-
-        .unit-page .sidebar,
-        .unit-page .menu-toggle {
-            display: none !important;
-        }
-
-        .unit-page .main-content {
+        .main-content {
             width: 100%;
-            max-width: 100%;
-            min-height: 100vh;
-            margin-left: 0 !important;
-            padding: 0 40px;
-            background: #08111f;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 25px;
         }
 
-        /* BARRA SUPERIOR */
-
-        .unit-page .topbar {
+        .topbar {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             gap: 20px;
-            padding: 28px 10px;
-            background: #0d1b2a !important;
+            padding: 30px 0;
             border-bottom: 1px solid rgba(255,255,255,.08);
         }
 
-        .unit-page .topbar h1 {
-            margin: 8px 0 0;
-            color: #ffffff !important;
-            font-size: 1.8rem;
-        }
-
-        .unit-page .topbar-subtitle {
-            margin: 0;
-            color: #60a5fa !important;
-            font-size: .78rem;
+        .topbar-subtitle {
+            color: #60a5fa;
+            font-size: .8rem;
             font-weight: bold;
             letter-spacing: 2px;
         }
 
-        .unit-page .profile-badge {
+        .topbar h1 {
+            margin: 10px 0 0;
+            font-size: 1.7rem;
+            color: #ffffff;
+        }
+
+        .profile-badge {
             display: flex;
             align-items: center;
             justify-content: center;
             width: 48px;
             height: 48px;
+            flex-shrink: 0;
             border-radius: 50%;
-            background: #2563eb !important;
-            color: #ffffff !important;
+            background: #2563eb;
             font-weight: bold;
         }
 
-        /* PRESENTACIÓN */
-
-        .unit-page .welcome-section {
+        .welcome-section {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 35px;
+            gap: 30px;
             margin: 35px 0;
             padding: 45px;
-            border: 1px solid rgba(96,165,250,.15);
             border-radius: 20px;
+            border: 1px solid rgba(96,165,250,.15);
             background: linear-gradient(
                 135deg, #0d1b2a, #10243b
-            ) !important;
+            );
         }
 
-        .unit-page .welcome-content {
+        .welcome-content {
             flex: 1;
-            min-width: 0;
         }
 
-        .unit-page .tag {
+        .tag {
             display: inline-block;
-            padding: 8px 14px;
+            padding: 8px 15px;
             border-radius: 30px;
-            border: 1px solid rgba(96,165,250,.2);
-            background: rgba(37,99,235,.12);
-            color: #60a5fa !important;
-            font-size: .75rem;
+            background: rgba(37,99,235,.15);
+            color: #60a5fa;
+            font-size: .8rem;
             font-weight: bold;
-            letter-spacing: 1px;
         }
 
-        .unit-page .welcome-content h2 {
-            margin: 22px 0;
-            color: #ffffff !important;
+        .welcome-content h2 {
+            margin: 20px 0;
             font-size: clamp(1.8rem, 4vw, 2.8rem);
-            line-height: 1.2;
         }
 
-        .unit-page .welcome-content h2 span {
-            color: #60a5fa !important;
+        .welcome-content h2 span {
+            color: #60a5fa;
         }
 
-        .unit-page .welcome-content p {
-            max-width: 680px;
-            margin-bottom: 25px;
-            color: #cbd5e1 !important;
+        .welcome-content p {
+            max-width: 700px;
+            color: #cbd5e1;
             line-height: 1.8;
         }
 
-        .unit-page .welcome-graphic {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 240px;
-            flex-shrink: 0;
-        }
-
-        .unit-page .graphic-circle {
+        .graphic-circle {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 190px;
-            height: 190px;
+            width: 180px;
+            height: 180px;
+            flex-shrink: 0;
             border-radius: 50%;
-            border: 5px solid rgba(96,165,250,.18);
+            border: 5px solid rgba(96,165,250,.2);
             background: linear-gradient(
                 135deg, #2563eb, #1e40af
             );
             box-shadow: 0 20px 50px rgba(0,0,0,.35);
-            color: white;
         }
 
-        .unit-page .graphic-circle span {
+        .graphic-circle span {
             font-size: 3.5rem;
             font-weight: bold;
         }
 
-        .unit-page .graphic-circle strong {
-            font-size: 1.2rem;
-            letter-spacing: 3px;
+        .graphic-circle strong {
+            letter-spacing: 2px;
         }
 
-        /* BOTONES */
-
-        .unit-page .primary-button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+        .primary-button {
+            display: inline-block;
             padding: 12px 20px;
-            border: 1px solid #3b82f6 !important;
             border-radius: 10px;
-            background: #2563eb !important;
-            color: #ffffff !important;
-            text-decoration: none !important;
-            font-weight: bold;
+            background: #2563eb;
+            border: 1px solid #3b82f6;
+            color: #ffffff;
+            text-decoration: none;
             font-size: .9rem;
-            transition: .2s ease;
+            font-weight: bold;
+            transition: .2s;
         }
 
-        .unit-page .primary-button:hover {
-            background: #1d4ed8 !important;
+        .primary-button:hover {
+            background: #1d4ed8;
             transform: translateY(-2px);
         }
 
-        .unit-page .secondary-button {
-            background: transparent !important;
-            color: #93c5fd !important;
-            border-color: rgba(96,165,250,.4) !important;
+        .secondary-button {
+            background: transparent;
+            color: #93c5fd;
+            border-color: rgba(96,165,250,.4);
         }
 
-        .unit-page .secondary-button:hover {
-            background: rgba(37,99,235,.16) !important;
-            color: white !important;
+        .secondary-button:hover {
+            background: rgba(37,99,235,.15);
         }
 
-        /* ESTADÍSTICAS */
-
-        .unit-page .stats-grid {
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0,1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-bottom: 45px;
         }
 
-        .unit-page .stat-card {
+        .stat-card {
             display: flex;
             align-items: center;
             gap: 20px;
-            padding: 24px;
-            border: 1px solid rgba(255,255,255,.07);
+            padding: 25px;
             border-radius: 16px;
-            background: #0d1b2a !important;
-            box-shadow: 0 10px 30px rgba(0,0,0,.15);
+            background: #0d1b2a;
+            border: 1px solid rgba(255,255,255,.07);
         }
 
-        .unit-page .stat-icon {
-            color: #60a5fa !important;
+        .stat-icon {
             font-size: 2rem;
+            color: #60a5fa;
         }
 
-        .unit-page .stat-card h3 {
+        .stat-card h3 {
             margin: 0 0 5px;
-            color: #ffffff !important;
             font-size: 1.8rem;
         }
 
-        .unit-page .stat-card p {
+        .stat-card p {
             margin: 0;
-            color: #94a3b8 !important;
+            color: #94a3b8;
             font-size: .9rem;
         }
 
-        /* SECCIONES */
-
-        .unit-page .content-section {
-            width: 100%;
-            margin-bottom: 40px;
-        }
-
-        .unit-page .section-heading {
+        .section-heading {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             gap: 20px;
             margin-bottom: 25px;
         }
 
-        .unit-page .section-label {
-            color: #60a5fa !important;
+        .section-label {
+            color: #60a5fa;
             font-size: .8rem;
             font-weight: bold;
             letter-spacing: 1px;
         }
 
-        .unit-page .section-heading h2 {
-            margin: 8px 0 0;
-            color: #ffffff !important;
+        .section-heading h2 {
+            margin: 8px 0;
             font-size: 2rem;
         }
 
-        .unit-page .section-counter {
+        .section-counter {
             padding: 9px 15px;
-            border: 1px solid rgba(255,255,255,.08);
             border-radius: 20px;
             background: #0d1b2a;
-            color: #cbd5e1 !important;
-            white-space: nowrap;
+            color: #cbd5e1;
         }
 
-        /* TARJETAS DE SEMANAS */
-
-        .unit-page .documents-panel {
+        .documents-panel {
             display: flex;
             align-items: flex-start;
             gap: 22px;
-            width: 100%;
-            margin-bottom: 20px;
-            padding: 28px;
-            border: 1px solid rgba(255,255,255,.07);
+            margin-bottom: 25px;
+            padding: 30px;
             border-radius: 18px;
-            background: #0d1b2a !important;
-            box-shadow: 0 10px 30px rgba(0,0,0,.18);
-            transition: border-color .2s;
+            background: #0d1b2a;
+            border: 1px solid rgba(255,255,255,.07);
         }
 
-        .unit-page .documents-panel:hover {
-            border-color: rgba(96,165,250,.3);
-        }
-
-        .unit-page .document-icon {
+        .document-icon {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -335,510 +280,421 @@
             background: linear-gradient(
                 135deg, #2563eb, #1e40af
             );
-            color: #ffffff !important;
-            font-size: 1.1rem;
             font-weight: bold;
         }
 
-        .unit-page .panel-content {
+        .panel-content {
             flex: 1;
             min-width: 0;
         }
 
-        .unit-page .documents-panel h3 {
-            margin: 10px 0;
-            color: #ffffff !important;
+        .panel-content h3 {
+            margin: 12px 0;
+            color: #ffffff;
+            font-size: 1.4rem;
+        }
+
+        .panel-content h4 {
+            margin: 30px 0 15px;
+            color: #60a5fa;
+        }
+
+        .panel-content p {
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .file-card {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+            padding: 20px;
+            margin-bottom: 12px;
+            border-radius: 14px;
+            background: #101f31;
+            border: 1px solid rgba(96,165,250,.12);
+        }
+
+        .file-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-content h3 {
+            margin: 0 0 8px;
+            font-size: 1rem;
             overflow-wrap: anywhere;
         }
 
-        .unit-page .documents-panel h4 {
-            margin: 24px 0 14px;
-            color: #60a5fa !important;
-        }
-
-        .unit-page .documents-panel p {
-            color: #cbd5e1 !important;
-            line-height: 1.7;
-        }
-
-        /* ARCHIVOS */
-
-        .unit-page .file-card {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin: 12px 0;
-            padding: 18px;
-            border: 1px solid rgba(96,165,250,.12);
-            border-radius: 14px;
-            background: #101f31;
-        }
-
-        .unit-page .file-card:hover {
-            background: #13263d;
-            border-color: rgba(96,165,250,.3);
-        }
-
-        .unit-page .file-card .document-icon {
-            width: 45px;
-            height: 45px;
-            font-size: 1.2rem;
-        }
-
-        .unit-page .file-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .unit-page .file-content h3 {
-            margin: 0 0 6px;
-            font-size: 1rem;
-        }
-
-        .unit-page .file-content p {
+        .file-content p {
             margin: 0;
-            color: #94a3b8 !important;
             font-size: .85rem;
+            color: #94a3b8;
         }
 
-        .unit-page .file-actions {
+        .file-actions {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-top: 14px;
+            margin-top: 15px;
         }
 
-        .unit-page .empty-message {
-            padding: 18px;
-            border: 1px dashed rgba(96,165,250,.25);
+        .empty-message {
+            padding: 20px;
             border-radius: 12px;
             background: #101f31;
-            color: #94a3b8 !important;
+            color: #94a3b8;
+            border: 1px dashed rgba(96,165,250,.3);
         }
 
-        /* FOOTER */
-
-        .unit-page .footer {
-            padding: 30px 10px;
-            border-top: 1px solid rgba(255,255,255,.06);
-            background: #08111f !important;
+        .footer {
+            margin-top: 50px;
+            padding: 30px 0;
+            border-top: 1px solid rgba(255,255,255,.07);
             text-align: center;
-        }
-
-        .unit-page .footer p {
-            color: #94a3b8 !important;
+            color: #94a3b8;
             font-size: .9rem;
         }
 
-        /* RESPONSIVE */
-
-        @media (max-width: 900px) {
-            .unit-page .main-content {
-                padding: 0 20px;
-            }
-
-            .unit-page .welcome-section {
-                flex-direction: column;
-                align-items: stretch;
+        @media (max-width: 800px) {
+            .welcome-section {
                 padding: 30px;
             }
 
-            .unit-page .welcome-graphic {
-                width: 100%;
+            .graphic-circle {
+                display: none;
             }
 
-            .unit-page .stats-grid {
-                grid-template-columns: repeat(2, minmax(0,1fr));
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
 
         @media (max-width: 600px) {
-            .unit-page .main-content {
-                padding: 0 12px;
+            .main-content {
+                padding: 0 15px;
             }
 
-            .unit-page .topbar {
-                padding: 18px 5px;
+            .topbar h1 {
+                font-size: 1.2rem;
             }
 
-            .unit-page .topbar h1 {
-                font-size: 1.25rem;
+            .welcome-section {
+                padding: 25px;
             }
 
-            .unit-page .profile-badge {
-                display: none;
-            }
-
-            .unit-page .welcome-section {
-                padding: 22px;
-            }
-
-            .unit-page .welcome-graphic {
-                display: none;
-            }
-
-            .unit-page .stats-grid {
-                grid-template-columns: 1fr;
+            .documents-panel {
+                padding: 20px;
                 gap: 12px;
             }
 
-            .unit-page .section-heading {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .unit-page .section-heading h2 {
-                font-size: 1.5rem;
-            }
-
-            .unit-page .documents-panel {
-                padding: 18px;
-                gap: 12px;
-            }
-
-            .unit-page .documents-panel > .document-icon {
+            .documents-panel > .document-icon {
                 display: none;
             }
 
-            .unit-page .file-card {
+            .file-card {
                 flex-direction: column;
+            }
+
+            .section-heading {
                 align-items: flex-start;
-                padding: 14px;
+                flex-direction: column;
             }
 
-            .unit-page .file-card .document-icon {
-                display: none;
-            }
-
-            .unit-page .primary-button {
+            .file-actions .primary-button {
                 width: 100%;
+                text-align: center;
             }
         }
     </style>
 </head>
 
-<body class="unit-page">
+<body>
 
-<div class="app-container">
+<main class="main-content">
 
-    <main class="main-content">
+    <!-- ENCABEZADO -->
 
-        <!-- BARRA SUPERIOR -->
+    <header class="topbar">
 
-        <header class="topbar">
+        <div>
+            <p class="topbar-subtitle">
+                PORTAFOLIO ACADÉMICO
+            </p>
+
+            <h1>
+                Comunicación e Integración de
+                Arquitecturas de Software
+            </h1>
+        </div>
+
+        <div class="profile-badge">JS</div>
+
+    </header>
+
+    <!-- PRESENTACIÓN DE LA UNIDAD -->
+
+    <section class="welcome-section">
+
+        <div class="welcome-content">
+
+            <span class="tag">UNIDAD III</span>
+
+            <h2>
+                Desarrollo de Interfaces con
+                <span>React JS</span>
+            </h2>
+
+            <p>
+                En esta unidad se presenta el desarrollo
+                del primer requerimiento funcional del
+                proyecto Pequeños Exploradores LMS,
+                correspondiente a la ventana de ingreso
+                o Login utilizando React JS.
+            </p>
+
+            <a href="#semanas" class="primary-button">
+                Explorar semana →
+            </a>
+
+        </div>
+
+        <div class="graphic-circle">
+            <span>03</span>
+            <strong>DEV</strong>
+        </div>
+
+    </section>
+
+    <!-- ESTADÍSTICAS -->
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-icon">▦</div>
             <div>
-                <p class="topbar-subtitle">
-                    PORTAFOLIO ACADÉMICO
-                </p>
+                <h3>01</h3>
+                <p>Semana académica</p>
+            </div>
+        </div>
 
-                <h1>
-                    Comunicación e Integración de
-                    Arquitecturas de Software
-                </h1>
+        <div class="stat-card">
+            <div class="stat-icon">▤</div>
+            <div>
+                <h3>III</h3>
+                <p>Unidad académica</p>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">✓</div>
+            <div>
+                <h3>React</h3>
+                <p>Desarrollo de Login</p>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- SEMANA 09 -->
+
+    <section id="semanas">
+
+        <div class="section-heading">
+
+            <div>
+                <span class="section-label">
+                    CONTENIDO DE LA UNIDAD
+                </span>
+                <h2>Unidad III</h2>
             </div>
 
-            <div class="profile-badge">
-                JS
-            </div>
-        </header>
+            <span class="section-counter">
+                01 semana
+            </span>
 
-        <!-- PRESENTACIÓN -->
+        </div>
 
-        <section class="welcome-section">
+        <article class="documents-panel">
 
-            <div class="welcome-content">
+            <div class="document-icon">09</div>
 
-                <span class="tag">
-                    UNIDAD III
+            <div class="panel-content">
+
+                <span class="section-label">
+                    SEMANA 09
                 </span>
 
-                <h2>
-                    Desarrollo e
-                    <span>Integración de Software</span>
-                </h2>
+                <!-- ===================================== -->
+                <!-- EDITA AQUÍ EL TÍTULO DE LA SEMANA -->
+                <!-- ===================================== -->
+
+                <h3>
+                    Codificación del primer requerimiento
+                    en React JS: ventana de ingreso (Login)
+                </h3>
+
+                <!-- ===================================== -->
+                <!-- EDITA AQUÍ LA DESCRIPCIÓN -->
+                <!-- ===================================== -->
 
                 <p>
-                    En esta unidad se desarrollan actividades
-                    relacionadas con el diseño físico de bases
-                    de datos, el diseño de interfaces de usuario
-                    y la codificación de requerimientos mediante
-                    tecnologías como Microsoft Azure, Figma y React JS.
+                    Durante esta semana se desarrolló la
+                    codificación del primer requerimiento
+                    funcional del sistema Pequeños
+                    Exploradores LMS, correspondiente
+                    a la ventana de ingreso o Login.
 
-                    Los trabajos corresponden al desarrollo
-                    académico del proyecto Pequeños Exploradores LMS.
+                    Para su implementación se utilizó
+                    React JS, aplicando componentes
+                    reutilizables, manejo de estados
+                    y validación de formularios.
+
+                    Se implementaron campos para el
+                    ingreso de credenciales, selección
+                    de perfiles de usuario y presentación
+                    de mensajes de validación.
+
+                    Este desarrollo constituye una primera
+                    versión funcional de la interfaz
+                    de autenticación, preparada para
+                    su posterior integración con
+                    los servicios del sistema.
                 </p>
 
-                <a href="#semanas" class="primary-button">
-                    Explorar semanas →
-                </a>
+                <!-- DOCUMENTOS DE SEMANA 09 -->
 
-            </div>
+                <h4>Trabajos académicos</h4>
 
-            <div class="welcome-graphic">
-                <div class="graphic-circle">
-                    <span>03</span>
-                    <strong>DEV</strong>
-                </div>
-            </div>
+                <%
+                    if (archivos != null && archivos.length > 0) {
 
-        </section>
+                        for (File archivo : archivos) {
 
-        <!-- ESTADÍSTICAS -->
+                            String nombre = archivo.getName();
 
-        <section class="stats-grid">
+                            String nombreCodificado =
+                                URLEncoder.encode(
+                                    nombre,
+                                    "UTF-8"
+                                ).replace("+", "%20");
 
-            <div class="stat-card">
-                <div class="stat-icon">▦</div>
-                <div>
-                    <h3>04</h3>
-                    <p>Semanas académicas</p>
-                </div>
-            </div>
+                            String urlArchivo =
+                                contexto + rutaRelativa + "/" +
+                                nombreCodificado;
 
-            <div class="stat-card">
-                <div class="stat-icon">▤</div>
-                <div>
-                    <h3>III</h3>
-                    <p>Unidad académica</p>
-                </div>
-            </div>
+                            int punto = nombre.lastIndexOf('.');
 
-            <div class="stat-card">
-                <div class="stat-icon">✓</div>
-                <div>
-                    <h3>React</h3>
-                    <p>Desarrollo de interfaces</p>
-                </div>
-            </div>
+                            String extension =
+                                punto >= 0
+                                ? nombre.substring(punto + 1).toUpperCase()
+                                : "ARCHIVO";
 
-        </section>
+                            String nombreSeguro = nombre
+                                .replace("&", "&amp;")
+                                .replace("<", "&lt;")
+                                .replace(">", "&gt;")
+                                .replace("\"", "&quot;")
+                                .replace("'", "&#39;");
+                %>
 
-        <!-- SEMANAS -->
+                <div class="file-card">
 
-        <section class="content-section" id="semanas">
+                    <div class="document-icon">▤</div>
 
-            <div class="section-heading">
-                <div>
-                    <span class="section-label">
-                        CONTENIDO DE LA UNIDAD
-                    </span>
-                    <h2>Unidad III</h2>
-                </div>
+                    <div class="file-content">
 
-                <span class="section-counter">
-                    04 semanas
-                </span>
-            </div>
+                        <h3><%= nombreSeguro %></h3>
 
-            <%
-                for (int semana = 1; semana <= 4; semana++) {
+                        <p>
+                            Archivo académico ·
+                            Formato <%= extension %>
+                        </p>
 
-                    int numeroSemana = semana + 8;
-                    String nombreSemana = "semana" + semana;
+                        <div class="file-actions">
 
-                    String rutaRelativa =
-                        "/assets/documentos/unidad3/" + nombreSemana;
+                            <a href="<%= urlArchivo %>"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="primary-button">
+                                Ver archivo →
+                            </a>
 
-                    String rutaFisica =
-                        application.getRealPath(rutaRelativa);
-
-                    File[] archivos = null;
-
-                    if (rutaFisica != null) {
-                        File carpeta = new File(rutaFisica);
-
-                        if (carpeta.isDirectory()) {
-                            archivos = carpeta.listFiles(
-                                archivo -> archivo.isFile()
-                            );
-                        }
-                    }
-
-                    if (archivos != null) {
-                        Arrays.sort(
-                            archivos,
-                            Comparator.comparing(
-                                File::getName,
-                                String.CASE_INSENSITIVE_ORDER
-                            )
-                        );
-                    }
-
-                    String rutaWeb = contexto + rutaRelativa;
-            %>
-
-            <article class="documents-panel">
-
-                <div class="document-icon">
-                    <%= String.format("%02d", semana) %>
-                </div>
-
-                <div class="panel-content">
-
-                    <span class="section-label">
-                        SEMANA <%= numeroSemana %>
-                    </span>
-
-                    <h3>
-                        <%= titulos[semana - 1] %>
-                    </h3>
-
-                    <p>
-                        <%= descripciones[semana - 1] %>
-                    </p>
-
-                    <h4>Trabajos académicos</h4>
-
-                    <%
-                        if (archivos != null && archivos.length > 0) {
-
-                            for (File archivo : archivos) {
-
-                                String nombre = archivo.getName();
-
-                                String nombreCodificado =
-                                    URLEncoder.encode(
-                                        nombre,
-                                        StandardCharsets.UTF_8
-                                    ).replace("+", "%20");
-
-                                String extension = "";
-
-                                int punto = nombre.lastIndexOf('.');
-
-                                if (punto >= 0) {
-                                    extension = nombre.substring(
-                                        punto + 1
-                                    ).toUpperCase();
-                                }
-
-                                String urlArchivo =
-                                    rutaWeb + "/" + nombreCodificado;
-                    %>
-
-                    <div class="file-card">
-
-                        <div class="document-icon">
-                            ▤
-                        </div>
-
-                        <div class="file-content">
-
-                            <h3>
-                                <%= nombre
-                                    .replace("&", "&amp;")
-                                    .replace("<", "&lt;")
-                                    .replace(">", "&gt;")
-                                    .replace("\"", "&quot;") %>
-                            </h3>
-
-                            <p>
-                                Archivo académico
-                                <%= extension.isEmpty()
-                                    ? ""
-                                    : " · Formato " + extension %>
-                            </p>
-
-                            <div class="file-actions">
-
-                                <a href="<%= urlArchivo %>"
-                                   target="_blank"
-                                   rel="noopener noreferrer"
-                                   class="primary-button">
-
-                                    Ver archivo →
-                                </a>
-
-                                <a href="<%= urlArchivo %>"
-                                   download
-                                   class="primary-button secondary-button">
-
-                                    Descargar
-                                </a>
-
-                            </div>
+                            <a href="<%= urlArchivo %>"
+                               download
+                               class="primary-button secondary-button">
+                                Descargar
+                            </a>
 
                         </div>
 
                     </div>
 
-                    <%
-                            }
+                </div>
 
-                        } else {
-                    %>
-
-                    <p class="empty-message">
-                        Todavía no hay trabajos cargados
-                        en esta semana.
-                    </p>
-
-                    <%
+                <%
                         }
-                    %>
+                    } else {
+                %>
 
-                </div>
+                <p class="empty-message">
+                    Todavía no hay trabajos cargados
+                    para la Semana 09.
+                </p>
 
-            </article>
-
-            <%
-                }
-            %>
-
-        </section>
-
-        <!-- NAVEGACIÓN -->
-
-        <section class="content-section">
-
-            <div class="section-heading">
-                <div>
-                    <span class="section-label">
-                        NAVEGACIÓN
-                    </span>
-                    <h2>Continuar explorando</h2>
-                </div>
-            </div>
-
-            <div class="documents-panel">
-
-                <div class="document-icon">←</div>
-
-                <div class="panel-content">
-
-                    <h3>Volver a las unidades</h3>
-
-                    <p>
-                        Regresa al inicio para consultar
-                        las demás unidades académicas
-                        de tu portafolio.
-                    </p>
-
-                    <a href="<%= contexto %>/index.jsp#unidades"
-                       class="primary-button">
-
-                        ← Ver unidades
-                    </a>
-
-                </div>
+                <%
+                    }
+                %>
 
             </div>
 
-        </section>
+        </article>
 
-        <!-- FOOTER -->
+    </section>
 
-        <footer class="footer">
-            <p>© 2026 Mi Portafolio Académico</p>
-            <p>
-                Comunicación e Integración de
-                Arquitecturas de Software
-            </p>
-        </footer>
+    <!-- VOLVER AL INICIO -->
 
-    </main>
+    <section>
 
-</div>
+        <div class="documents-panel">
+
+            <div class="document-icon">←</div>
+
+            <div class="panel-content">
+
+                <h3>Volver a las unidades</h3>
+
+                <p>
+                    Regresa al inicio para consultar
+                    las demás unidades académicas
+                    de tu portafolio.
+                </p>
+
+                <a href="<%= contexto %>/index.jsp#unidades"
+                   class="primary-button">
+                    ← Ver unidades
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- PIE DE PÁGINA -->
+
+    <footer class="footer">
+
+        <p>© 2026 Mi Portafolio Académico</p>
+
+        <p>
+            Comunicación e Integración de
+            Arquitecturas de Software
+        </p>
+
+    </footer>
+
+</main>
 
 </body>
 </html>
