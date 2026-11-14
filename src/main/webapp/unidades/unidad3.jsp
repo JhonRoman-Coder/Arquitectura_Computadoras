@@ -4,275 +4,342 @@
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.Comparator" %>
+<%@ page import="java.nio.charset.StandardCharsets" %>
 <%@ page import="java.nio.file.Files" %>
 <%@ page import="java.nio.file.Path" %>
+
+<%!
+    // Obtener el número de una carpeta: semana1, semana2, etc.
+    private int obtenerNumeroSemana(File carpeta) {
+        String nombre = carpeta.getName();
+
+        try {
+            return Integer.parseInt(
+                nombre.replaceFirst("(?i)^semana", "")
+            );
+        } catch (Exception e) {
+            return Integer.MAX_VALUE;
+        }
+    }
+
+    // Escapar nombres para mostrarlos correctamente en HTML.
+    private String escaparHTML(String texto) {
+        if (texto == null) return "";
+
+        return texto
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace("\"", "&quot;")
+            .replace("'", "&#39;");
+    }
+
+    // Detectar el tipo MIME según la extensión.
+    private String obtenerMime(String extension, File archivo) {
+        String ext = extension.toLowerCase();
+
+        switch (ext) {
+            case "pdf": return "application/pdf";
+
+            case "jpg":
+            case "jpeg": return "image/jpeg";
+
+            case "png": return "image/png";
+            case "gif": return "image/gif";
+            case "webp": return "image/webp";
+            case "svg": return "image/svg+xml";
+
+            case "txt": return "text/plain";
+            case "csv": return "text/csv";
+            case "json": return "application/json";
+            case "xml": return "application/xml";
+
+            case "mp4": return "video/mp4";
+            case "webm": return "video/webm";
+            case "mp3": return "audio/mpeg";
+            case "wav": return "audio/wav";
+            case "ogg": return "audio/ogg";
+
+            case "doc": return "application/msword";
+            case "docx": return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+            case "xls": return "application/vnd.ms-excel";
+            case "xlsx": return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            case "ppt": return "application/vnd.ms-powerpoint";
+            case "pptx": return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+
+            case "zip": return "application/zip";
+            case "rar": return "application/vnd.rar";
+
+            default:
+                try {
+                    String mime = Files.probeContentType(archivo.toPath());
+                    return mime != null ? mime : "application/octet-stream";
+                } catch (Exception e) {
+                    return "application/octet-stream";
+                }
+        }
+    }
+
+    // Determinar si el navegador puede mostrar el archivo.
+    private boolean admiteVistaPrevia(String extension) {
+        return extension.matches(
+            "(?i)pdf|png|jpg|jpeg|gif|webp|svg|bmp|txt|csv|json|xml|mp4|webm|mp3|wav|ogg|m4a"
+        );
+    }
+%>
 
 <%
     String contexto = request.getContextPath();
 
-    // SEMANA 09: carpeta semana3 dentro de unidad3
-    String rutaRelativa = "/assets/documentos/unidad3/semana3";
-    String rutaFisica = application.getRealPath(rutaRelativa);
+    // Carpeta principal de la Unidad III.
+    String rutaBase = "/assets/documentos/unidad3";
 
-    File[] archivos = null;
+    String rutaFisica = application.getRealPath(rutaBase);
 
-    if (rutaFisica != null) {
-        File carpeta = new File(rutaFisica);
+    File carpetaBase = rutaFisica != null
+        ? new File(rutaFisica)
+        : null;
 
-        if (carpeta.isDirectory()) {
-            archivos = carpeta.listFiles(
-                archivo -> archivo.isFile()
-            );
-        }
+    // Detectar automáticamente las carpetas semana1, semana2...
+    File[] semanas = null;
+
+    if (carpetaBase != null && carpetaBase.isDirectory()) {
+        semanas = carpetaBase.listFiles(
+            carpeta -> carpeta.isDirectory()
+                && carpeta.getName().matches("(?i)semana\\d+")
+        );
     }
 
-    if (archivos != null) {
+    if (semanas != null) {
         Arrays.sort(
-            archivos,
-            Comparator.comparing(
-                File::getName,
-                String.CASE_INSENSITIVE_ORDER
+            semanas,
+            Comparator.comparingInt(
+                carpeta -> obtenerNumeroSemana(carpeta)
             )
         );
     }
+
+    int cantidadSemanas = semanas != null ? semanas.length : 0;
+
+    // La Unidad III comienza en la Semana 09.
+    int semanaInicial = 9;
 %>
 
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Unidad III | Mi Portafolio Académico</title>
 
+    <link rel="stylesheet"
+          href="<%= contexto %>/css/estilos.css">
+
     <style>
-        * {
+
+        /* =========================================
+           BASE
+        ========================================= */
+
+        .unit-page {
+            background: #08111f !important;
+            color: #f8fafc !important;
+            min-height: 100vh;
+        }
+
+        .unit-page .sidebar,
+        .unit-page .menu-toggle {
+            display: none !important;
+        }
+
+        .unit-page .app-container {
+            min-height: 100vh;
+            background: #08111f;
+        }
+
+        .unit-page .main-content {
+            margin-left: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-height: 100vh;
+            padding: 0 30px;
             box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            margin: 0;
             background: #08111f;
             color: #f8fafc;
-            font-family: Arial, sans-serif;
         }
 
-        .main-content {
+        /* =========================================
+           BARRA SUPERIOR
+        ========================================= */
+
+        .unit-page .topbar {
             width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 25px;
-        }
-
-        .topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            padding: 30px 0;
+            box-sizing: border-box;
+            background: #0d1b2a !important;
             border-bottom: 1px solid rgba(255,255,255,.08);
+            color: #fff !important;
         }
 
-        .topbar-subtitle {
-            color: #60a5fa;
-            font-size: .8rem;
-            font-weight: bold;
-            letter-spacing: 2px;
+        .unit-page .topbar h1 {
+            color: #fff !important;
         }
 
-        .topbar h1 {
-            margin: 10px 0 0;
-            font-size: 1.7rem;
-            color: #ffffff;
+        .unit-page .topbar-subtitle,
+        .unit-page .section-label {
+            color: #60a5fa !important;
         }
 
-        .profile-badge {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 48px;
-            height: 48px;
-            flex-shrink: 0;
-            border-radius: 50%;
-            background: #2563eb;
-            font-weight: bold;
+        .unit-page .profile-badge {
+            background: #2563eb !important;
+            color: #fff !important;
         }
 
-        .welcome-section {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 30px;
-            margin: 35px 0;
-            padding: 45px;
-            border-radius: 20px;
-            border: 1px solid rgba(96,165,250,.15);
+        /* =========================================
+           PRESENTACIÓN
+        ========================================= */
+
+        .unit-page .welcome-section {
             background: linear-gradient(
                 135deg, #0d1b2a, #10243b
-            );
+            ) !important;
+
+            border: 1px solid rgba(96,165,250,.15);
+            border-radius: 20px;
+            color: #fff !important;
         }
 
-        .welcome-content {
-            flex: 1;
+        .unit-page .welcome-content h2 {
+            color: #fff !important;
         }
 
-        .tag {
-            display: inline-block;
-            padding: 8px 15px;
-            border-radius: 30px;
-            background: rgba(37,99,235,.15);
-            color: #60a5fa;
-            font-size: .8rem;
-            font-weight: bold;
+        .unit-page .welcome-content h2 span {
+            color: #60a5fa !important;
         }
 
-        .welcome-content h2 {
-            margin: 20px 0;
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
+        .unit-page .welcome-content p {
+            color: #cbd5e1 !important;
         }
 
-        .welcome-content h2 span {
-            color: #60a5fa;
+        .unit-page .tag {
+            color: #60a5fa !important;
+            background: rgba(37,99,235,.12);
+            border: 1px solid rgba(96,165,250,.2);
         }
 
-        .welcome-content p {
-            max-width: 700px;
-            color: #cbd5e1;
-            line-height: 1.8;
-        }
-
-        .graphic-circle {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 180px;
-            height: 180px;
-            flex-shrink: 0;
-            border-radius: 50%;
-            border: 5px solid rgba(96,165,250,.2);
+        .unit-page .graphic-circle {
             background: linear-gradient(
                 135deg, #2563eb, #1e40af
-            );
-            box-shadow: 0 20px 50px rgba(0,0,0,.35);
+            ) !important;
+
+            border: 5px solid rgba(96,165,250,.18);
+            color: #fff !important;
         }
 
-        .graphic-circle span {
-            font-size: 3.5rem;
-            font-weight: bold;
-        }
+        /* =========================================
+           BOTONES
+        ========================================= */
 
-        .graphic-circle strong {
-            letter-spacing: 2px;
-        }
-
-        .primary-button {
+        .unit-page .primary-button {
             display: inline-block;
-            padding: 12px 20px;
-            border-radius: 10px;
-            background: #2563eb;
-            border: 1px solid #3b82f6;
-            color: #ffffff;
-            text-decoration: none;
-            font-size: .9rem;
-            font-weight: bold;
-            transition: .2s;
+            padding: 11px 17px;
+            margin: 5px 5px 5px 0;
+            border-radius: 9px;
+            background: #2563eb !important;
+            border: 1px solid #3b82f6 !important;
+            color: #fff !important;
+            text-decoration: none !important;
             cursor: pointer;
+            font-size: .88rem;
+            transition: .2s;
         }
 
-        .primary-button:hover {
-            background: #1d4ed8;
+        .unit-page .primary-button:hover {
+            background: #1d4ed8 !important;
             transform: translateY(-2px);
         }
 
-        .secondary-button {
-            background: transparent;
-            color: #93c5fd;
-            border-color: rgba(96,165,250,.4);
+        .unit-page .secondary-button {
+            background: transparent !important;
+            color: #93c5fd !important;
         }
 
-        .secondary-button:hover {
-            background: rgba(37,99,235,.15);
-        }
+        /* =========================================
+           ESTADÍSTICAS
+        ========================================= */
 
-        .stats-grid {
+        .unit-page .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
-            margin-bottom: 45px;
+            margin: 35px 0;
         }
 
-        .stat-card {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            padding: 25px;
-            border-radius: 16px;
-            background: #0d1b2a;
-            border: 1px solid rgba(255,255,255,.07);
+        .unit-page .stat-card {
+            background: #0d1b2a !important;
+            border: 1px solid rgba(255,255,255,.07) !important;
+            color: #fff !important;
         }
 
-        .stat-icon {
-            font-size: 2rem;
-            color: #60a5fa;
+        .unit-page .stat-card h3 {
+            color: #fff !important;
         }
 
-        .stat-card h3 {
-            margin: 0 0 5px;
-            font-size: 1.8rem;
+        .unit-page .stat-card p {
+            color: #94a3b8 !important;
         }
 
-        .stat-card p {
-            margin: 0;
-            color: #94a3b8;
-            font-size: .9rem;
+        .unit-page .stat-icon {
+            color: #60a5fa !important;
         }
 
-        .section-heading {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            margin-bottom: 25px;
+        /* =========================================
+           SECCIONES
+        ========================================= */
+
+        .unit-page .content-section {
+            width: 100%;
+            color: #f8fafc;
         }
 
-        .section-label {
-            color: #60a5fa;
-            font-size: .8rem;
-            font-weight: bold;
-            letter-spacing: 1px;
+        .unit-page .section-heading h2 {
+            color: #fff !important;
         }
 
-        .section-heading h2 {
-            margin: 8px 0;
-            font-size: 2rem;
-        }
-
-        .section-counter {
+        .unit-page .section-counter {
+            background: #0d1b2a !important;
+            color: #cbd5e1 !important;
+            border: 1px solid rgba(255,255,255,.08);
             padding: 9px 15px;
             border-radius: 20px;
-            background: #0d1b2a;
-            color: #cbd5e1;
         }
 
-        .documents-panel {
+        /* =========================================
+           TARJETAS DE SEMANAS
+        ========================================= */
+
+        .unit-page .week-card {
             display: flex;
-            align-items: flex-start;
             gap: 22px;
-            margin-bottom: 25px;
-            padding: 30px;
+            padding: 27px;
+            margin-bottom: 20px;
             border-radius: 18px;
-            background: #0d1b2a;
+            background: #0d1b2a !important;
             border: 1px solid rgba(255,255,255,.07);
+            box-sizing: border-box;
+            transition: .2s;
         }
 
-        .document-icon {
+        .unit-page .week-card:hover {
+            border-color: rgba(96,165,250,.3);
+        }
+
+        .unit-page .document-icon {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -282,107 +349,116 @@
             border-radius: 14px;
             background: linear-gradient(
                 135deg, #2563eb, #1e40af
-            );
+            ) !important;
+            color: #fff !important;
             font-weight: bold;
+            font-size: 1.1rem;
         }
 
-        .panel-content {
+        .unit-page .week-content {
             flex: 1;
             min-width: 0;
         }
 
-        .panel-content h3 {
-            margin: 12px 0;
-            color: #ffffff;
-            font-size: 1.4rem;
-        }
-
-        .panel-content h4 {
-            margin: 30px 0 15px;
-            color: #60a5fa;
-        }
-
-        .panel-content p {
-            color: #cbd5e1;
-            line-height: 1.8;
-        }
-
-        .file-card {
-            display: flex;
-            gap: 15px;
-            align-items: flex-start;
-            padding: 20px;
-            margin-bottom: 12px;
-            border-radius: 14px;
-            background: #101f31;
-            border: 1px solid rgba(96,165,250,.12);
-        }
-
-        .file-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .file-content h3 {
-            margin: 0 0 8px;
-            font-size: 1rem;
+        .unit-page .week-content h3 {
+            color: #fff !important;
+            margin: 10px 0;
             overflow-wrap: anywhere;
         }
 
-        .file-content p {
-            margin: 0;
-            font-size: .85rem;
-            color: #94a3b8;
+        .unit-page .week-content h4 {
+            color: #60a5fa !important;
+            margin: 25px 0 15px;
         }
 
-        .file-actions {
+        .unit-page .week-content p {
+            color: #cbd5e1 !important;
+            line-height: 1.7;
+        }
+
+        /* =========================================
+           ARCHIVOS
+        ========================================= */
+
+        .unit-page .file-card {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 17px;
+            margin: 12px 0;
+            border-radius: 13px;
+            background: #101f31 !important;
+            border: 1px solid rgba(96,165,250,.12);
         }
 
-        .empty-message {
-            padding: 20px;
-            border-radius: 12px;
-            background: #101f31;
-            color: #94a3b8;
-            border: 1px dashed rgba(96,165,250,.3);
+        .unit-page .file-card:hover {
+            background: #13263d !important;
+            border-color: rgba(96,165,250,.3);
         }
 
-        .footer {
-            margin-top: 50px;
-            padding: 30px 0;
-            border-top: 1px solid rgba(255,255,255,.07);
-            text-align: center;
-            color: #94a3b8;
-            font-size: .9rem;
-        }
-
-        .file-type-badge {
-            display: inline-flex;
+        .unit-page .file-icon {
+            display: flex;
             align-items: center;
             justify-content: center;
             min-width: 48px;
             height: 48px;
-            padding: 0 8px;
-            flex-shrink: 0;
-            border-radius: 12px;
+            padding: 0 5px;
+            box-sizing: border-box;
+            border-radius: 10px;
             background: rgba(37,99,235,.18);
             color: #93c5fd;
-            font-size: .72rem;
+            font-size: .7rem;
             font-weight: bold;
+            overflow: hidden;
         }
 
-        /* VISOR DE ARCHIVOS */
+        .unit-page .file-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .unit-page .file-info h3 {
+            font-size: 1rem;
+            margin: 0 0 8px;
+            color: #f8fafc !important;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        .unit-page .file-info p {
+            font-size: .82rem;
+            color: #94a3b8 !important;
+            margin: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .unit-page .file-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-top: 12px;
+        }
+
+        .unit-page .empty-message {
+            padding: 18px;
+            border: 1px dashed rgba(96,165,250,.3);
+            border-radius: 12px;
+            background: #101f31;
+            color: #94a3b8 !important;
+        }
+
+        /* =========================================
+           VISOR DE DOCUMENTOS
+        ========================================= */
 
         .preview-modal {
             display: none;
             position: fixed;
             inset: 0;
-            z-index: 1000;
-            padding: 24px;
-            background: rgba(0,0,0,.82);
+            z-index: 9999;
+            padding: 20px;
+            background: rgba(0,0,0,.85);
+            box-sizing: border-box;
         }
 
         .preview-modal.active {
@@ -394,12 +470,13 @@
         .preview-window {
             display: flex;
             flex-direction: column;
-            width: min(1100px, 100%);
-            height: min(850px, 92vh);
+            width: 100%;
+            max-width: 1100px;
+            height: 90vh;
             overflow: hidden;
-            border: 1px solid rgba(96,165,250,.25);
-            border-radius: 16px;
+            border-radius: 15px;
             background: #0d1b2a;
+            border: 1px solid rgba(96,165,250,.25);
         }
 
         .preview-header {
@@ -408,7 +485,7 @@
             justify-content: space-between;
             gap: 15px;
             padding: 15px 20px;
-            color: #fff;
+            color: white;
             border-bottom: 1px solid rgba(255,255,255,.1);
         }
 
@@ -417,418 +494,536 @@
         }
 
         .preview-close {
-            padding: 8px 13px;
+            padding: 9px 15px;
+            background: #2563eb;
             border: 0;
             border-radius: 8px;
-            background: #2563eb;
             color: white;
             cursor: pointer;
         }
 
         .preview-frame {
             width: 100%;
-            height: 100%;
             flex: 1;
             border: 0;
-            background: #fff;
+            background: white;
         }
 
-        .preview-note {
-            margin-top: 12px;
-            color: #94a3b8;
-            font-size: .82rem;
-            line-height: 1.5;
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        .unit-page .footer {
+            background: #08111f !important;
+            color: #94a3b8 !important;
+            border-top: 1px solid rgba(255,255,255,.06);
         }
 
-        @media (max-width: 800px) {
-            .welcome-section {
-                padding: 30px;
-            }
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
 
-            .graphic-circle {
-                display: none;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
+        @media(max-width: 900px) {
+            .unit-page .stats-grid {
+                grid-template-columns: repeat(2,1fr);
             }
         }
 
-        @media (max-width: 600px) {
-            .main-content {
-                padding: 0 15px;
+        @media(max-width: 600px) {
+
+            .unit-page .main-content {
+                padding: 0 12px;
             }
 
-            .topbar h1 {
+            .unit-page .topbar h1 {
                 font-size: 1.2rem;
             }
 
-            .welcome-section {
-                padding: 25px;
-            }
-
-            .documents-panel {
-                padding: 20px;
-                gap: 12px;
-            }
-
-            .documents-panel > .document-icon {
+            .unit-page .profile-badge {
                 display: none;
             }
 
-            .file-card {
+            .unit-page .welcome-section {
+                padding: 20px;
+            }
+
+            .unit-page .welcome-content h2 {
+                font-size: 1.65rem;
+            }
+
+            .unit-page .welcome-graphic {
+                display: none;
+            }
+
+            .unit-page .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .unit-page .week-card {
+                padding: 17px;
+                gap: 12px;
+            }
+
+            .unit-page .week-card > .document-icon {
+                width: 42px;
+                height: 42px;
+                font-size: .9rem;
+            }
+
+            .unit-page .file-card {
+                padding: 12px;
+            }
+
+            .unit-page .file-icon {
+                display: none;
+            }
+
+            .unit-page .file-actions {
                 flex-direction: column;
             }
 
-            .section-heading {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .file-actions .primary-button {
+            .unit-page .file-actions .primary-button {
                 width: 100%;
+                box-sizing: border-box;
                 text-align: center;
             }
         }
+
     </style>
+
 </head>
 
-<body>
+<body class="unit-page">
 
-<main class="main-content">
+<div class="app-container">
 
-    <!-- ENCABEZADO -->
+    <main class="main-content">
 
-    <header class="topbar">
+        <!-- =====================================
+             BARRA SUPERIOR
+        ====================================== -->
 
-        <div>
-            <p class="topbar-subtitle">
-                PORTAFOLIO ACADÉMICO
-            </p>
-
-            <h1>
-                Comunicación e Integración de
-                Arquitecturas de Software
-            </h1>
-        </div>
-
-        <div class="profile-badge">JS</div>
-
-    </header>
-
-    <!-- PRESENTACIÓN DE LA UNIDAD -->
-
-    <section class="welcome-section">
-
-        <div class="welcome-content">
-
-            <span class="tag">UNIDAD III</span>
-
-            <h2>
-                Desarrollo de Interfaces con
-                <span>React JS</span>
-            </h2>
-
-            <p>
-                En esta unidad se presenta el desarrollo
-                del primer requerimiento funcional del
-                proyecto Pequeños Exploradores LMS,
-                correspondiente a la ventana de ingreso
-                o Login utilizando React JS.
-            </p>
-
-            <a href="#semanas" class="primary-button">
-                Explorar semana →
-            </a>
-
-        </div>
-
-        <div class="graphic-circle">
-            <span>03</span>
-            <strong>DEV</strong>
-        </div>
-
-    </section>
-
-    <!-- ESTADÍSTICAS -->
-
-    <section class="stats-grid">
-
-        <div class="stat-card">
-            <div class="stat-icon">▦</div>
-            <div>
-                <h3>01</h3>
-                <p>Semana académica</p>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon">▤</div>
-            <div>
-                <h3>III</h3>
-                <p>Unidad académica</p>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon">✓</div>
-            <div>
-                <h3>React</h3>
-                <p>Desarrollo de Login</p>
-            </div>
-        </div>
-
-    </section>
-
-    <!-- SEMANA 09 -->
-
-    <section id="semanas">
-
-        <div class="section-heading">
+        <header class="topbar">
 
             <div>
-                <span class="section-label">
-                    CONTENIDO DE LA UNIDAD
-                </span>
-
-                <h2>Unidad III</h2>
-            </div>
-
-            <span class="section-counter">
-                01 semana
-            </span>
-
-        </div>
-
-        <article class="documents-panel">
-
-            <div class="document-icon">09</div>
-
-            <div class="panel-content">
-
-                <span class="section-label">
-                    SEMANA 09
-                </span>
-
-                <h3>
-                    Codificación del primer requerimiento
-                    en React JS: ventana de ingreso (Login)
-                </h3>
-
-                <p>
-                    Durante esta semana se desarrolló la
-                    codificación del primer requerimiento
-                    funcional del sistema Pequeños
-                    Exploradores LMS, correspondiente
-                    a la ventana de ingreso o Login.
-
-                    Para su implementación se utilizó
-                    React JS, aplicando componentes
-                    reutilizables, manejo de estados
-                    y validación de formularios.
-
-                    Se implementaron campos para el
-                    ingreso de credenciales, selección
-                    de perfiles de usuario y presentación
-                    de mensajes de validación.
-
-                    Este desarrollo constituye una primera
-                    versión funcional de la interfaz
-                    de autenticación, preparada para
-                    su posterior integración con
-                    los servicios del sistema.
+                <p class="topbar-subtitle">
+                    PORTAFOLIO ACADÉMICO
                 </p>
 
-                <!-- DOCUMENTOS DE SEMANA 09 -->
+                <h1>
+                    Comunicación e Integración de Arquitecturas de Software
+                </h1>
+            </div>
 
-                <h4>Trabajos académicos</h4>
+            <div class="profile-badge">
+                JS
+            </div>
 
-                <%
-                    if (archivos != null && archivos.length > 0) {
+        </header>
 
-                        for (File archivo : archivos) {
+        <!-- =====================================
+             PRESENTACIÓN
+        ====================================== -->
 
-                            String nombre = archivo.getName();
+        <section class="welcome-section">
 
-                            String nombreCodificado =
-                                URLEncoder.encode(
-                                    nombre,
-                                    "UTF-8"
-                                ).replace("+", "%20");
+            <div class="welcome-content">
 
-                            String urlArchivo =
-                                contexto + rutaRelativa + "/" +
-                                nombreCodificado;
+                <span class="tag">
+                    UNIDAD III
+                </span>
 
-                            int punto = nombre.lastIndexOf('.');
+                <h2>
+                    Desarrollo de Interfaces con
+                    <span>React JS</span>
+                </h2>
 
-                            String extension = punto >= 0
-                                ? nombre.substring(punto + 1).toLowerCase()
-                                : "";
+                <p>
+                    En esta unidad se desarrolla el primer
+                    requerimiento funcional del proyecto
+                    Pequeños Exploradores LMS, utilizando
+                    React JS para implementar la ventana
+                    de ingreso o Login.
+                </p>
 
-                            String extensionMostrar = extension.isEmpty()
-                                ? "ARCHIVO"
-                                : extension.toUpperCase();
+                <a href="#semanas" class="primary-button">
+                    Explorar semanas →
+                </a>
 
-                            String mimeType = "application/octet-stream";
+            </div>
 
-                            try {
-                                Path rutaArchivo = archivo.toPath();
+            <div class="welcome-graphic">
+                <div class="graphic-circle">
+                    <span>03</span>
+                    <strong>REACT</strong>
+                </div>
+            </div>
 
-                                String mimeDetectado =
-                                    Files.probeContentType(rutaArchivo);
+        </section>
 
-                                if (mimeDetectado != null) {
-                                    mimeType = mimeDetectado;
-                                }
+        <!-- =====================================
+             ESTADÍSTICAS DINÁMICAS
+        ====================================== -->
 
-                            } catch (Exception ignored) {
-                                // Se conserva el tipo genérico.
-                            }
+        <section class="stats-grid">
 
-                            boolean vistaPrevia =
-                                extension.matches(
-                                    "pdf|png|jpg|jpeg|gif|webp|bmp|svg|txt|csv|json|xml|mp4|webm|ogg|mp3|wav|m4a"
-                                );
+            <div class="stat-card">
 
-                            String nombreSeguro = nombre
-                                .replace("&", "&amp;")
-                                .replace("<", "&lt;")
-                                .replace(">", "&gt;")
-                                .replace("\"", "&quot;")
-                                .replace("'", "&#39;");
-                %>
+                <div class="stat-icon">▦</div>
 
-                <div class="file-card">
+                <div>
+                    <h3><%= String.format("%02d", cantidadSemanas) %></h3>
+                    <p>Semanas registradas</p>
+                </div>
 
-                    <div class="file-type-badge">
-                        <%= extensionMostrar %>
-                    </div>
+            </div>
 
-                    <div class="file-content">
+            <div class="stat-card">
 
-                        <h3><%= nombreSeguro %></h3>
+                <div class="stat-icon">▤</div>
 
-                        <p>
-                            Archivo académico ·
-                            Formato <%= extensionMostrar %> ·
-                            <%= mimeType %>
-                        </p>
+                <div>
+                    <h3>III</h3>
+                    <p>Unidad académica</p>
+                </div>
 
-                        <div class="file-actions">
+            </div>
 
-                            <% if (vistaPrevia) { %>
+            <div class="stat-card">
 
-                                <button
-                                    type="button"
-                                    class="primary-button"
-                                    data-url="<%= urlArchivo %>"
-                                    data-nombre="<%= nombreSeguro %>"
-                                    onclick="abrirVisor(this.dataset.url, this.dataset.nombre)">
+                <div class="stat-icon">✓</div>
 
-                                    Ver archivo →
+                <div>
+                    <h3>100%</h3>
+                    <p>Contenido organizado</p>
+                </div>
 
-                                </button>
+            </div>
 
-                            <% } else { %>
+        </section>
 
-                                <span class="preview-note">
-                                    Este formato no tiene vista previa
-                                    integrada en el navegador.
-                                </span>
+        <!-- =====================================
+             CONTENIDO DE LAS SEMANAS
+        ====================================== -->
+
+        <section class="content-section" id="semanas">
+
+            <div class="section-heading">
+
+                <div>
+                    <span class="section-label">
+                        CONTENIDO DE LA UNIDAD
+                    </span>
+
+                    <h2>Unidad III</h2>
+                </div>
+
+                <span class="section-counter">
+                    <%= cantidadSemanas %> semanas
+                </span>
+
+            </div>
+
+            <%
+
+                if (semanas != null && semanas.length > 0) {
+
+                    for (File carpetaSemana : semanas) {
+
+                        int numeroCarpeta =
+                            obtenerNumeroSemana(carpetaSemana);
+
+                        int numeroReal =
+                            semanaInicial + numeroCarpeta - 1;
+
+                        String nombreSemana =
+                            String.format("%02d", numeroReal);
+
+                        File[] archivos =
+                            carpetaSemana.listFiles(
+                                archivo -> archivo.isFile()
+                            );
+
+                        if (archivos != null) {
+
+                            Arrays.sort(
+                                archivos,
+                                Comparator.comparing(
+                                    File::getName,
+                                    String.CASE_INSENSITIVE_ORDER
+                                )
+                            );
+                        }
+
+            %>
+
+            <!-- =================================
+                 TARJETA AUTOMÁTICA DE SEMANA
+            ================================== -->
+
+            <article class="week-card">
+
+                <div class="document-icon">
+                    <%= String.format("%02d", numeroCarpeta) %>
+                </div>
+
+                <div class="week-content">
+
+                    <span class="section-label">
+                        SEMANA <%= nombreSemana %>
+                    </span>
+
+                    <h3>
+                        Material académico de la Semana
+                        <%= nombreSemana %>
+                    </h3>
+
+                    <p>
+                        En esta sección se encuentran
+                        los documentos, actividades,
+                        trabajos y materiales correspondientes
+                        a la Semana <%= nombreSemana %>
+                        de la Unidad III.
+                    </p>
+
+                    <h4>Trabajos académicos</h4>
+
+                    <%
+
+                        if (archivos != null && archivos.length > 0) {
+
+                            for (File archivo : archivos) {
+
+                                String nombre = archivo.getName();
+
+                                int punto = nombre.lastIndexOf('.');
+
+                                String extension = punto >= 0
+                                    ? nombre.substring(punto + 1).toLowerCase()
+                                    : "";
+
+                                String nombreCodificado =
+                                    URLEncoder.encode(
+                                        nombre,
+                                        StandardCharsets.UTF_8.name()
+                                    ).replace("+", "%20");
+
+                                String rutaArchivo =
+                                    contexto + rutaBase + "/" +
+                                    carpetaSemana.getName() + "/" +
+                                    nombreCodificado;
+
+                                String nombreSeguro =
+                                    escaparHTML(nombre);
+
+                                String mime =
+                                    obtenerMime(extension, archivo);
+
+                                boolean tieneVista =
+                                    admiteVistaPrevia(extension);
+
+                    %>
+
+                    <!-- ARCHIVO DETECTADO AUTOMÁTICAMENTE -->
+
+                    <div class="file-card">
+
+                        <div class="file-icon">
+                            <%= extension.isEmpty()
+                                ? "FILE"
+                                : escaparHTML(extension.toUpperCase()) %>
+                        </div>
+
+                        <div class="file-info">
+
+                            <h3>
+                                <%= nombreSeguro %>
+                            </h3>
+
+                            <p>
+                                Semana <%= nombreSemana %>
+                                · Formato <%= extension.toUpperCase() %>
+                                · <%= mime %>
+                            </p>
+
+                            <div class="file-actions">
+
+                                <% if (tieneVista) { %>
+
+                                    <button
+                                        type="button"
+                                        class="primary-button"
+                                        data-url="<%= escaparHTML(rutaArchivo) %>"
+                                        data-nombre="<%= nombreSeguro %>"
+                                        onclick="abrirVisor(
+                                            this.dataset.url,
+                                            this.dataset.nombre
+                                        )">
+
+                                        Ver archivo →
+
+                                    </button>
+
+                                <% } %>
+
+                                <a
+                                    href="<%= escaparHTML(rutaArchivo) %>"
+                                    download="<%= nombreSeguro %>"
+                                    class="primary-button secondary-button">
+
+                                    Descargar
+
+                                </a>
+
+                            </div>
+
+                            <% if (!tieneVista) { %>
+
+                                <p>
+                                    Este formato se encuentra disponible
+                                    para descarga. Para visualizarlo
+                                    necesitarás una aplicación compatible.
+                                </p>
 
                             <% } %>
-
-                            <a
-                                href="<%= urlArchivo %>"
-                                download="<%= nombreSeguro %>"
-                                class="primary-button secondary-button">
-
-                                Descargar
-
-                            </a>
 
                         </div>
 
                     </div>
 
-                </div>
+                    <%
 
-                <%
+                            }
+
+                        } else {
+
+                    %>
+
+                    <p class="empty-message">
+                        Todavía no hay trabajos cargados
+                        en esta semana.
+                    </p>
+
+                    <%
+
                         }
 
-                    } else {
-                %>
+                    %>
 
-                <p class="empty-message">
-                    Todavía no hay trabajos cargados
-                    para la Semana 09.
-                </p>
+                </div>
 
-                <%
+            </article>
+
+            <%
+
                     }
-                %>
+
+                } else {
+
+            %>
+
+                <div class="week-card">
+
+                    <div class="week-content">
+
+                        <h3>No se encontraron semanas</h3>
+
+                        <p>
+                            No se encontraron carpetas de semanas
+                            dentro de la carpeta de la Unidad III.
+                            Verifica que existan las carpetas
+                            semana1, semana2, semana3, etc.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            <%
+
+                }
+
+            %>
+
+        </section>
+
+        <!-- =====================================
+             VOLVER A LAS UNIDADES
+        ====================================== -->
+
+        <section class="content-section">
+
+            <div class="section-heading">
+
+                <div>
+                    <span class="section-label">
+                        NAVEGACIÓN
+                    </span>
+
+                    <h2>Continuar explorando</h2>
+                </div>
 
             </div>
 
-        </article>
+            <div class="week-card">
 
-    </section>
+                <div class="document-icon">
+                    ←
+                </div>
 
-    <!-- VOLVER AL INICIO -->
+                <div class="week-content">
 
-    <section>
+                    <h3>Volver a las unidades</h3>
 
-        <div class="documents-panel">
+                    <p>
+                        Regresa al inicio para consultar
+                        las demás unidades académicas.
+                    </p>
 
-            <div class="document-icon">←</div>
+                    <a
+                        href="<%= contexto %>/index.jsp#unidades"
+                        class="primary-button">
 
-            <div class="panel-content">
+                        ← Ver unidades
 
-                <h3>Volver a las unidades</h3>
+                    </a>
 
-                <p>
-                    Regresa al inicio para consultar
-                    las demás unidades académicas
-                    de tu portafolio.
-                </p>
-
-                <a href="<%= contexto %>/index.jsp#unidades"
-                   class="primary-button">
-
-                    ← Ver unidades
-
-                </a>
+                </div>
 
             </div>
 
-        </div>
+        </section>
 
-    </section>
+        <!-- =====================================
+             FOOTER
+        ====================================== -->
 
-    <!-- PIE DE PÁGINA -->
+        <footer class="footer">
 
-    <footer class="footer">
+            <p>© 2026 Mi Portafolio Académico</p>
 
-        <p>© 2026 Mi Portafolio Académico</p>
+            <p>
+                Comunicación e Integración de
+                Arquitecturas de Software
+            </p>
 
-        <p>
-            Comunicación e Integración de
-            Arquitecturas de Software
-        </p>
+        </footer>
 
-    </footer>
+    </main>
 
-</main>
+</div>
 
-<!-- VENTANA DEL VISOR -->
+<!-- =========================================
+     VISOR DE ARCHIVOS
+========================================= -->
 
 <div
     id="previewModal"
     class="preview-modal"
     role="dialog"
     aria-modal="true"
-    aria-label="Vista previa del archivo"
+    aria-label="Vista previa del documento"
     onclick="cerrarVisorFondo(event)">
 
     <div class="preview-window">
@@ -853,7 +1048,7 @@
         <iframe
             id="previewFrame"
             class="preview-frame"
-            title="Vista previa del documento">
+            title="Vista previa del archivo">
         </iframe>
 
     </div>
@@ -864,11 +1059,16 @@
 
     function abrirVisor(url, nombre) {
 
-        const modal = document.getElementById('previewModal');
+        const modal =
+            document.getElementById('previewModal');
 
-        const frame = document.getElementById('previewFrame');
+        const frame =
+            document.getElementById('previewFrame');
 
-        document.getElementById('previewTitle').textContent = nombre;
+        const titulo =
+            document.getElementById('previewTitle');
+
+        titulo.textContent = nombre;
 
         frame.src = url;
 
@@ -877,12 +1077,13 @@
         document.body.style.overflow = 'hidden';
     }
 
-
     function cerrarVisor() {
 
-        const modal = document.getElementById('previewModal');
+        const modal =
+            document.getElementById('previewModal');
 
-        const frame = document.getElementById('previewFrame');
+        const frame =
+            document.getElementById('previewFrame');
 
         modal.classList.remove('active');
 
@@ -891,23 +1092,17 @@
         document.body.style.overflow = '';
     }
 
-
     function cerrarVisorFondo(event) {
 
         if (event.target.id === 'previewModal') {
-
             cerrarVisor();
-
         }
     }
-
 
     document.addEventListener('keydown', function(event) {
 
         if (event.key === 'Escape') {
-
             cerrarVisor();
-
         }
 
     });
