@@ -4,6 +4,8 @@
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.Comparator" %>
+<%@ page import="java.nio.file.Files" %>
+<%@ page import="java.nio.file.Path" %>
 
 <%
     String contexto = request.getContextPath();
@@ -181,6 +183,7 @@
             font-size: .9rem;
             font-weight: bold;
             transition: .2s;
+            cursor: pointer;
         }
 
         .primary-button:hover {
@@ -356,6 +359,87 @@
             font-size: .9rem;
         }
 
+        .file-type-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 48px;
+            height: 48px;
+            padding: 0 8px;
+            flex-shrink: 0;
+            border-radius: 12px;
+            background: rgba(37,99,235,.18);
+            color: #93c5fd;
+            font-size: .72rem;
+            font-weight: bold;
+        }
+
+        /* VISOR DE ARCHIVOS */
+
+        .preview-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            padding: 24px;
+            background: rgba(0,0,0,.82);
+        }
+
+        .preview-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-window {
+            display: flex;
+            flex-direction: column;
+            width: min(1100px, 100%);
+            height: min(850px, 92vh);
+            overflow: hidden;
+            border: 1px solid rgba(96,165,250,.25);
+            border-radius: 16px;
+            background: #0d1b2a;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 15px 20px;
+            color: #fff;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+        }
+
+        .preview-header strong {
+            overflow-wrap: anywhere;
+        }
+
+        .preview-close {
+            padding: 8px 13px;
+            border: 0;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 100%;
+            flex: 1;
+            border: 0;
+            background: #fff;
+        }
+
+        .preview-note {
+            margin-top: 12px;
+            color: #94a3b8;
+            font-size: .82rem;
+            line-height: 1.5;
+        }
+
         @media (max-width: 800px) {
             .welcome-section {
                 padding: 30px;
@@ -506,6 +590,7 @@
                 <span class="section-label">
                     CONTENIDO DE LA UNIDAD
                 </span>
+
                 <h2>Unidad III</h2>
             </div>
 
@@ -525,18 +610,10 @@
                     SEMANA 09
                 </span>
 
-                <!-- ===================================== -->
-                <!-- EDITA AQUÍ EL TÍTULO DE LA SEMANA -->
-                <!-- ===================================== -->
-
                 <h3>
                     Codificación del primer requerimiento
                     en React JS: ventana de ingreso (Login)
                 </h3>
-
-                <!-- ===================================== -->
-                <!-- EDITA AQUÍ LA DESCRIPCIÓN -->
-                <!-- ===================================== -->
 
                 <p>
                     Durante esta semana se desarrolló la
@@ -585,10 +662,34 @@
 
                             int punto = nombre.lastIndexOf('.');
 
-                            String extension =
-                                punto >= 0
-                                ? nombre.substring(punto + 1).toUpperCase()
-                                : "ARCHIVO";
+                            String extension = punto >= 0
+                                ? nombre.substring(punto + 1).toLowerCase()
+                                : "";
+
+                            String extensionMostrar = extension.isEmpty()
+                                ? "ARCHIVO"
+                                : extension.toUpperCase();
+
+                            String mimeType = "application/octet-stream";
+
+                            try {
+                                Path rutaArchivo = archivo.toPath();
+
+                                String mimeDetectado =
+                                    Files.probeContentType(rutaArchivo);
+
+                                if (mimeDetectado != null) {
+                                    mimeType = mimeDetectado;
+                                }
+
+                            } catch (Exception ignored) {
+                                // Se conserva el tipo genérico.
+                            }
+
+                            boolean vistaPrevia =
+                                extension.matches(
+                                    "pdf|png|jpg|jpeg|gif|webp|bmp|svg|txt|csv|json|xml|mp4|webm|ogg|mp3|wav|m4a"
+                                );
 
                             String nombreSeguro = nombre
                                 .replace("&", "&amp;")
@@ -600,7 +701,9 @@
 
                 <div class="file-card">
 
-                    <div class="document-icon">▤</div>
+                    <div class="file-type-badge">
+                        <%= extensionMostrar %>
+                    </div>
 
                     <div class="file-content">
 
@@ -608,22 +711,41 @@
 
                         <p>
                             Archivo académico ·
-                            Formato <%= extension %>
+                            Formato <%= extensionMostrar %> ·
+                            <%= mimeType %>
                         </p>
 
                         <div class="file-actions">
 
-                            <a href="<%= urlArchivo %>"
-                               target="_blank"
-                               rel="noopener noreferrer"
-                               class="primary-button">
-                                Ver archivo →
-                            </a>
+                            <% if (vistaPrevia) { %>
 
-                            <a href="<%= urlArchivo %>"
-                               download
-                               class="primary-button secondary-button">
+                                <button
+                                    type="button"
+                                    class="primary-button"
+                                    data-url="<%= urlArchivo %>"
+                                    data-nombre="<%= nombreSeguro %>"
+                                    onclick="abrirVisor(this.dataset.url, this.dataset.nombre)">
+
+                                    Ver archivo →
+
+                                </button>
+
+                            <% } else { %>
+
+                                <span class="preview-note">
+                                    Este formato no tiene vista previa
+                                    integrada en el navegador.
+                                </span>
+
+                            <% } %>
+
+                            <a
+                                href="<%= urlArchivo %>"
+                                download="<%= nombreSeguro %>"
+                                class="primary-button secondary-button">
+
                                 Descargar
+
                             </a>
 
                         </div>
@@ -634,6 +756,7 @@
 
                 <%
                         }
+
                     } else {
                 %>
 
@@ -672,7 +795,9 @@
 
                 <a href="<%= contexto %>/index.jsp#unidades"
                    class="primary-button">
+
                     ← Ver unidades
+
                 </a>
 
             </div>
@@ -695,6 +820,99 @@
     </footer>
 
 </main>
+
+<!-- VENTANA DEL VISOR -->
+
+<div
+    id="previewModal"
+    class="preview-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Vista previa del archivo"
+    onclick="cerrarVisorFondo(event)">
+
+    <div class="preview-window">
+
+        <div class="preview-header">
+
+            <strong id="previewTitle">
+                Vista previa
+            </strong>
+
+            <button
+                type="button"
+                class="preview-close"
+                onclick="cerrarVisor()">
+
+                Cerrar ✕
+
+            </button>
+
+        </div>
+
+        <iframe
+            id="previewFrame"
+            class="preview-frame"
+            title="Vista previa del documento">
+        </iframe>
+
+    </div>
+
+</div>
+
+<script>
+
+    function abrirVisor(url, nombre) {
+
+        const modal = document.getElementById('previewModal');
+
+        const frame = document.getElementById('previewFrame');
+
+        document.getElementById('previewTitle').textContent = nombre;
+
+        frame.src = url;
+
+        modal.classList.add('active');
+
+        document.body.style.overflow = 'hidden';
+    }
+
+
+    function cerrarVisor() {
+
+        const modal = document.getElementById('previewModal');
+
+        const frame = document.getElementById('previewFrame');
+
+        modal.classList.remove('active');
+
+        frame.src = 'about:blank';
+
+        document.body.style.overflow = '';
+    }
+
+
+    function cerrarVisorFondo(event) {
+
+        if (event.target.id === 'previewModal') {
+
+            cerrarVisor();
+
+        }
+    }
+
+
+    document.addEventListener('keydown', function(event) {
+
+        if (event.key === 'Escape') {
+
+            cerrarVisor();
+
+        }
+
+    });
+
+</script>
 
 </body>
 </html>
